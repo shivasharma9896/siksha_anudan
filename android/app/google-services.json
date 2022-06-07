@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "687291342262",
+    "project_id": "siksha-anudan",
+    "storage_bucket": "siksha-anudan.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687291342262:android:03eb83437a3a8e6cd8b517",
+        "android_client_info": {
+          "package_name": "com.example.siksha_anudan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687291342262-fnnj47mmmackqj3d4nsagpi1r8i3et8h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOr9mxBWTXyLt0fbbcrGanP5ag2PV_LMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687291342262-fnnj47mmmackqj3d4nsagpi1r8i3et8h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
