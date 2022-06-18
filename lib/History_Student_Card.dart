@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:siksha_anudan/constants.dart';
 class History_Profile_Card extends StatefulWidget {
   const History_Profile_Card({Key? key}) : super(key: key);
 
@@ -45,42 +46,23 @@ class _History_Profile_CardState extends State<History_Profile_Card> {
               const SizedBox(width: 50,),
               Column(
                 children: [
-                  Text("Kendal Jenner",style:
-                  TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w700
-                  ),),
+                  Text("Kendal Jenner",style:mainBlackHeading),
                   SizedBox(height: 15,),
                   Row(
                     children: [
-                      Text("Total Donations : ",
-                        style:
-                        TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700
-                        ),),
+                      Text("Total Donations : ", style: smallBlackHeading),
                       Text("Rs 50,000"),
                     ],
                   ),
                   Row(
                     children: [
-                      Text("Total Aid Required : ",
-                        style:
-                        TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700
-                        ),),
+                      Text("Total Aid Required : ", style:smallBlackHeading),
                       Text("Rs 1,00,000"),
                     ],
                   ),
                   Row(
                     children: [
-                      Text("My Contribution : ",
-                        style:
-                        TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700
-                        ),),
+                      Text("My Contribution : ", style:smallBlackHeading),
                       Text("Rs. 10,000"),
                     ],
                   )

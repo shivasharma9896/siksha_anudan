@@ -7,6 +7,7 @@ import 'BottomNav.dart';
 import 'Home_Page.dart';
 import 'Registration_Student_Page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'DonerProfile_Page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
         '/second': (context) =>  Login_Page(),
         '/search': (context) =>  SearchStudent_Page(),
         '/history': (context) =>  History_Page(),
+        '/registration': (context) =>  Registration_Student(),
+        '/profile': (context) =>  DonerProfile_Page(),
       },
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -48,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body:  Registration_Student(),
+      body:  Home_Page(),
     );
   }
 }

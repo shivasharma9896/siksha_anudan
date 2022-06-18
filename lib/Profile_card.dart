@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'constants.dart';
 class Search_Profile_Card extends StatefulWidget {
   const Search_Profile_Card({Key? key}) : super(key: key);
 
@@ -45,42 +46,23 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
                 const SizedBox(width: 70,),
                 Column(
                   children: [
-                    Text("Kendal Jenner",style:
-                      TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700
-                      ),),
+                    Text("Kendal Jenner",style:mainBlackHeading),
                     SizedBox(height: 15,),
                     Row(
                       children: [
-                        Text("Qualification : ",
-                          style:
-                          TextStyle(
-                            fontSize: 17,
-                          fontWeight: FontWeight.w700
-                          ),),
+                        Text("Qualification : ",style:smallBlackHeading),
                         Text("BCA"),
                       ],
                     ),
                     Row(
                       children: [
-                        Text("Applied For : ",
-                          style:
-                          TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700
-                          ),),
+                        Text("Applied For : ",style: smallBlackHeading),
                         Text("BCA"),
                       ],
                     ),
                     Row(
                       children: [
-                        Text("Aid Amount : ",
-                          style:
-                          TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700
-                          ),),
+                        Text("Aid Amount : ", style: smallBlackHeading),
                         Text("Rs. 1,00,0000"),
                       ],
                     )

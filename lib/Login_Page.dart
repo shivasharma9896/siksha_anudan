@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:siksha_anudan/constants.dart';
 
 class Login_Page extends StatefulWidget {
 
@@ -38,11 +39,7 @@ class _Login_PageState extends State<Login_Page> {
               ),
             ),
             const Center(
-              child: Text("Login",style: TextStyle(
-                fontSize: 30,
-                color: Colors.green,
-                fontWeight: FontWeight.w700,
-              ),
+              child: Text("Login",style: bigTextGreenHeading
               ),
             ),
             Padding(
@@ -50,13 +47,7 @@ class _Login_PageState extends State<Login_Page> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Email",
-                    style: TextStyle(
-                      color: Colors.lime,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  const Text("Email", style: textLimeheading),
                   const SizedBox(height: 10,
                   ),
                   TextField(
@@ -80,13 +71,7 @@ class _Login_PageState extends State<Login_Page> {
                   ),
                   const SizedBox(height: 10,
                   ),
-                  const Text("Password",
-                    style: TextStyle(
-                      color: Colors.lime,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  const Text("Password", style: textLimeheading),
                   const SizedBox(height: 10,
                   ),
                   TextField(
@@ -124,15 +109,15 @@ class _Login_PageState extends State<Login_Page> {
                   ),
                   Center(
                     child:ElevatedButton(onPressed: () async{
-                      try{
-                        final newUser=await _auth.createUserWithEmailAndPassword(email: email, password: password);
-                        if(newUser!=null){
+                      // try{
+                      //   final newUser=await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                      //   if(newUser!=null){
                           Navigator.pushNamed(context, '/search');
-                        }
-                      }
-                      catch(e){
-                        print(e);
-                      }
+                      //   }
+                      // }
+                      // catch(e){
+                      //   print(e);
+                      // }
                     },
                       style: ElevatedButton.styleFrom(
                         primary: const Color(0xFFFFE9EF),
@@ -143,6 +128,28 @@ class _Login_PageState extends State<Login_Page> {
                       child: const Padding(
                         padding: EdgeInsets.all(10),
                         child:  Text('Login',
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child:ElevatedButton(onPressed: () async{
+
+                          Navigator.pushNamed(context, '/registration');
+                    },
+                      style: ElevatedButton.styleFrom(
+                        primary: const Color(0xFFFFE9EF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child:  Text('Register',
                           style: TextStyle(
                             color: Colors.green,
                             fontSize: 20,

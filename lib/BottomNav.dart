@@ -76,6 +76,9 @@ class _BottomPageState extends State<BottomPage> {
                   else if(selectedIndex==1){
                     Navigator.pushNamed(context, '/history');
                   }
+                  else{
+                    Navigator.pushNamed(context, '/profile');
+                  }
                 });
               },
             ),
