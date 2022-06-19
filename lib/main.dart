@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:siksha_anudan/Doner%20Home.dart';
 import 'package:siksha_anudan/History_Page.dart';
 import 'package:siksha_anudan/Login_Page.dart';
 import 'Login_Page.dart';
 import 'Search_Student_Page.dart';
 import 'BottomNav.dart';
 import 'Home_Page.dart';
+import 'ForgetPassword.dart';
 import 'Registration_Student_Page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'DonerProfile_Page.dart';
@@ -26,11 +28,11 @@ class MyApp extends StatelessWidget {
       ),
       //initialRoute: '/',
       routes: {
-        '/second': (context) =>  Login_Page(),
-        '/search': (context) =>  SearchStudent_Page(),
-        '/history': (context) =>  History_Page(),
+        '/login': (context) =>  Login_Page(),
         '/registration': (context) =>  Registration_Student(),
         '/profile': (context) =>  DonerProfile_Page(),
+        '/d-home': (context) =>  DonerHome(),
+        '/forgot-pass': (context) =>  ForgetPass_Page(),
       },
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -51,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body:  Home_Page(),
+      body: Home_Page(),
     );
   }
 }

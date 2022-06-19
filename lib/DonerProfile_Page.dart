@@ -5,6 +5,8 @@ import 'BottomNav.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'constants.dart';
 import 'TextFieldWidget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DonerProfile_Page  extends StatefulWidget {
 
@@ -15,6 +17,7 @@ class DonerProfile_Page  extends StatefulWidget {
 }
 
 class _DonerProfile_Page extends State<DonerProfile_Page> {
+  final _auth=FirebaseAuth.instance;
   bool status=false;
   String name="Kendal Jenner";
   String email="Kendal@gmail.com";
@@ -25,7 +28,6 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomPage(initialIndex: 2,),
       backgroundColor: Colors.white,
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 32),
@@ -126,6 +128,31 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
               child: const Padding(
                 padding: EdgeInsets.all(10),
                 child:  Text('Save Changes',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+          Center(
+            child:ElevatedButton(onPressed: () async{
+              _auth.signOut();
+              Navigator.pop(context);
+            },
+
+              style: ElevatedButton.styleFrom(
+                primary: const Color(0xFFFFE9EF),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(10),
+                child:  Text('Log Out',
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 20,

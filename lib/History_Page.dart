@@ -14,7 +14,7 @@ class History_Page extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isRunning = true;
     return Scaffold(
-      bottomNavigationBar: BottomPage(initialIndex: 1,),
+
       body: SingleChildScrollView(
         child: Column(
             children: [

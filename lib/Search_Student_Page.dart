@@ -2,12 +2,9 @@ import 'package:drop_down_list/drop_down_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:siksha_anudan/Profile_card.dart';
-import 'constants.dart';
 import 'package:paginated_search_bar/paginated_search_bar.dart';
 import 'package:endless/endless.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'ComboBoxSearchStudentFilter.dart';
-import 'BottomNav.dart';
 
 
 final List<SelectedListItem> _listOfCities = [
@@ -89,8 +86,9 @@ class _SearchStudent_Page extends State<SearchStudent_Page> {
       final user=await _auth.currentUser!;
       if(user!=null){
         loggedUser=user;
-        print(loggedUser.email);
       }
+      print("user email");
+      print(loggedUser.email);
     }
     catch(e){
       print(e);
@@ -99,7 +97,6 @@ class _SearchStudent_Page extends State<SearchStudent_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomPage(initialIndex: 0,),
       backgroundColor: Colors.white,
       body:  SingleChildScrollView(
         child: Column(
