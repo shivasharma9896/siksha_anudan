@@ -349,54 +349,135 @@ class _Registration_Student extends State<Registration_Student> {
         ),
         Step(
 
-          state: StepState.complete,
-            isActive: _activeStepIndex>=3,
-            title: const Text('Confimation'),
-            content: Container(
-              child:Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ClipOval(child:_photo != null?Image.file(_photo!,width:250,height:250,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),),
-                  const SizedBox(height: 40,),
-
-                  Text('Name                  : ${name.text}'),
-                  Text('Father Name     : ${fname.text}'),
-                  Text('Mother Name    : ${mname.text}'),
-                  Text('Email : ${email.text}'),
-                  Text('Address : ${address.text}'),
-                  Text('Pin Code : ${pincode.text}'),
-                  Text('Date of Birth Day: ${_dayvalue}/${_monvalue}/${_yearvalue}'),
-                  Center(
-                    child: Container(
-                      child:const Text("High School Details",style: TextStyle(
-                        color: Colors.grey,
-                      ),),
+        state: StepState.complete,
+        isActive: _activeStepIndex>=3,
+        title: const Text('Confimation'),
+        content: Container(
+          child:Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ClipOval(child:_photo != null?Image.file(_photo!,width:250,height:250,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),),
+              const SizedBox(height: 40,),
+              //Text('Name                  : ${name.text}'),
+              apperance(
+                title: 'Name',
+                value: name.text,
+                a: 180-46,
+              ),
+              //const SizedBox(height: 20,),
+              //Text('Father Name     : ${fname.text}'),
+              apperance(
+                title: 'Father Name',
+                value: fname.text,
+                a: 137-46,
+              ),
+              //const SizedBox(height:20,),
+              //Text('Mother Name    : ${mname.text}'),
+              apperance(
+                title: 'Mother Name',
+                value: mname.text,
+                a: 132-46,
+              ),
+              //Text('Email : ${email.text}'),
+              apperance(
+                title: 'Email',
+                value: email.text,
+                a: 183-46,
+              ),
+              //Text('Address : ${address.text}'),
+              apperance(
+                title: 'Address',
+                value: address.text,
+                // a: 166,
+                a:120,
+              ),
+              //Text('Pin Code : ${pincode.text}'),
+              apperance(
+                title: 'Pin Code',
+                value: pincode.text,
+                a: 115,
+              ),
+              // Text('Date of Birth : ${_dayvalue}/${_monvalue}/${_yearvalue}',
+              //   style: const TextStyle(
+              //       fontWeight: FontWeight.bold
+              // ),
+              // ),
+              Container(
+                child: Row(
+                  children: [
+                    const Text('Date of Birth',style: TextStyle(
+                        fontWeight: FontWeight.bold
                     ),
-
-                    //high school details
-
-                  ),
-                  Text('School Name    : ${highschoolcollegename.text}'),
-                  Text('Board   : ${highschoolboard.text}'),
-                  Text('Percent    : ${highschoolpercent.text}'),
-                  Center(
-                    child: Container(
-                      child:const Text("Intermediate Details",style: TextStyle(
-                        color: Colors.grey,
-                      ),),
                     ),
-                  ),
-                  Text('School Name    : ${intermediatecollegename.text}'),
-                  Text('Board   : ${intermediateboard.text}'),
-                  Text('Percent    : ${intermediatepercent.text}'),
-                  //intermediate details
-                  const SizedBox(height: 40,),
-                  _signature != null?Image.file(_signature!,width:300,height:150,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),
-                ],
-              ) ,
-            )
+                    SizedBox(width: 140-46,),
+                    Text('${_dayvalue}/${_monvalue}/${_yearvalue}',style: const TextStyle(
+                        fontWeight: FontWeight.w300
+                    ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30,),
+              Center(
+                child: Container(
+                  child:const Text("High School Details",style: TextStyle(
+                    color: Colors.grey,
+                  ),),
+                ),
+              ),
+              const SizedBox(height: 20,),
+              //Text('School Name     ${highschoolcollegename.text}'),
+              apperance(
+                title: 'School Name',
+                value: highschoolcollegename.text,
+                a: 88,
+              ),
+              //Text('Board    ${highschoolboard.text}'),
+              apperance(
+                title: 'Board',
+                value: highschoolboard.text,
+                a: 134,
+              ),
+              //Text('Percent    : ${highschoolpercent.text}'),
+              apperance(
+                title: 'Percent',
+                value: highschoolpercent.text,
+                a: 125,
+              ),
+              const SizedBox(height: 30,),
+              Center(
+                child: Container(
+                  child:const Text("Intermediate Details",style: TextStyle(
+                    color: Colors.grey,
+                  ),),
+                ),
+              ),
+              //Text('School Name    : ${intermediatecollegename.text}'),
+              const SizedBox(height: 20,),
+              apperance(
+                title: 'School Name',
+                value: intermediatecollegename.text,
+                a: 88,
+              ),
+              // Text('Board   : ${intermediateboard.text}'),
+              apperance(
+                title: 'Board',
+                value: intermediateboard.text,
+                a: 134,
+              ),
+              //Text('Percent    : ${intermediatepercent.text}'),
+              apperance(
+                title: 'Percent',
+                value: intermediatepercent.text,
+                a: 125,
+              ),
+              const SizedBox(height: 40,),
+              _signature != null?Image.file(_signature!,width:300,height:150,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),
+            ],
+          ) ,
         )
+    )
       ];
 Widget CustomButton({
   required String title,
@@ -417,6 +498,28 @@ Widget CustomButton({
     ),
   );
 }
+  Widget apperance({
+    required String title,
+    required String value,
+    required double a,
+  }){
+    return Container(
+      child: Row(
+        children: [
+          Text(title,style: const TextStyle(
+              fontWeight: FontWeight.w900
+          ),
+          ),
+          SizedBox(width: a,),
+          Text(value,style: const TextStyle(
+              fontWeight: FontWeight.w300
+          ),
+          ),
+        ],
+      ),
+
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
