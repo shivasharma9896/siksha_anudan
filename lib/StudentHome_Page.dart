@@ -6,14 +6,14 @@ import 'package:siksha_anudan/History_Page.dart';
 import 'Search_Student_Page.dart';
 import 'package:line_icons/line_icons.dart';
 
-class DonerHome extends StatefulWidget {
-  const DonerHome({Key? key}) : super(key: key);
+class StudentHome extends StatefulWidget {
+  const StudentHome({Key? key}) : super(key: key);
 
   @override
-  State<DonerHome> createState() => _DonerHomeState();
+  State<StudentHome> createState() => _StudentHomeState();
 }
 
-class _DonerHomeState extends State<DonerHome> {
+class _StudentHomeState extends State<StudentHome> {
   int currentIndex=0;
   final screens=[
     SearchStudent_Page(),
@@ -29,8 +29,8 @@ class _DonerHomeState extends State<DonerHome> {
         onTap:(index)=> setState(()=>currentIndex=index) ,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(LineIcons.search),
-            label: 'Search',
+            icon: Icon(LineIcons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(LineIcons.history),

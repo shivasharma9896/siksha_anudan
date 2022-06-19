@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:siksha_anudan/Doner%20Home.dart';
 import 'package:siksha_anudan/History_Page.dart';
 import 'package:siksha_anudan/Login_Page.dart';
+import 'package:siksha_anudan/StudentCurrentProgress_Page.dart';
 import 'Login_Page.dart';
 import 'Search_Student_Page.dart';
 import 'BottomNav.dart';
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Home_Page(),
+      body: StudentCurrentPage(),
     );
   }
 }
