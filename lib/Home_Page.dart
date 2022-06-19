@@ -49,7 +49,7 @@ class Home_Page extends StatelessWidget{
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
       ElevatedButton(onPressed: () {
-        Navigator.pushNamed(context, '/second');
+        Navigator.pushNamed(context, '/login');
       },
       style: ElevatedButton.styleFrom(
       primary: const Color(0xFFFFE9EF),
@@ -69,7 +69,7 @@ class Home_Page extends StatelessWidget{
       ),
       const SizedBox(width: 30.0),
       ElevatedButton(onPressed: () {
-        Navigator.pushNamed(context, '/second');
+        Navigator.pushNamed(context, '/login');
       },
       style: ElevatedButton.styleFrom(
       primary: const Color(0xFFFFE9EF),

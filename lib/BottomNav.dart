@@ -70,15 +70,7 @@ class _BottomPageState extends State<BottomPage> {
               onTabChange: (index) {
                 setState(() {
                   selectedIndex = index;
-                  if(selectedIndex==0){
-                    Navigator.pushNamed(context, '/search');
-                  }
-                  else if(selectedIndex==1){
-                    Navigator.pushNamed(context, '/history');
-                  }
-                  else{
-                    Navigator.pushNamed(context, '/profile');
-                  }
+                  print(selectedIndex);
                 });
               },
             ),
