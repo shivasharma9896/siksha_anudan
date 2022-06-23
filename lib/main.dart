@@ -8,6 +8,8 @@ import 'ForgetPassword.dart';
 import 'Registration_Student_Page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'DonerProfile_Page.dart';
+import 'StudentHome_Page.dart';
+import 'StudentLogin.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,9 +29,11 @@ class MyApp extends StatelessWidget {
       //initialRoute: '/',
       routes: {
         '/login': (context) =>  const Login_Page(),
+        '/s-login': (context) =>  const SLogin_Page(),
         '/registration': (context) =>  const Registration_Student(),
         '/profile': (context) =>  const DonerProfile_Page(),
         '/d-home': (context) =>  const DonerHome(),
+        '/s-home':(context) =>  const StudentHome(),
         '/forgot-pass': (context) =>  const ForgetPass_Page(),
         '/student-profile': (context) =>  const DonerViewStudent_Page(),
       },
@@ -52,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.white,
-      body: DonerViewStudent_Page(),
+      body: Home_Page(),
     );
   }
 }

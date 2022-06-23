@@ -5,15 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:siksha_anudan/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class Login_Page extends StatefulWidget {
+class SLogin_Page extends StatefulWidget {
 
-  const Login_Page({Key? key}) : super(key: key);
+  const SLogin_Page({Key? key}) : super(key: key);
 
   @override
-  State<Login_Page> createState() => _Login_PageState();
+  State<SLogin_Page> createState() => _SLogin_PageState();
 }
 
-class _Login_PageState extends State<Login_Page> {
+class _SLogin_PageState extends State<SLogin_Page> {
   bool _passwordVisible=false;
   final _auth=FirebaseAuth.instance;
   String email="";
@@ -43,7 +43,7 @@ class _Login_PageState extends State<Login_Page> {
                 ),
               ),
               const Center(
-                child: Text("Donor Login",style: bigTextGreenHeading
+                child: Text("Student Login",style: bigTextGreenHeading
                 ),
               ),
               Padding(
@@ -133,7 +133,7 @@ class _Login_PageState extends State<Login_Page> {
 
                         try{
                           final user=await _auth.signInWithEmailAndPassword(email: email, password: password);
-                          Navigator.pushNamed(context, '/d-home');
+                          Navigator.pushNamed(context, '/s-home');
                         }
 
                         catch(e){
@@ -146,7 +146,7 @@ class _Login_PageState extends State<Login_Page> {
                         // try{
                         //   final newUser=await _auth.createUserWithEmailAndPassword(email: email, password: password);
                         //   if(newUser!=null){
-                            //Navigator.pushNamed(context, '/search');
+                        //Navigator.pushNamed(context, '/search');
                         //   }
                         // }
                         // catch(e){
@@ -173,7 +173,7 @@ class _Login_PageState extends State<Login_Page> {
                     Center(
                       child:ElevatedButton(onPressed: () async{
 
-                            Navigator.pushNamed(context, '/registration');
+                        Navigator.pushNamed(context, '/registration');
                       },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFFFE9EF),

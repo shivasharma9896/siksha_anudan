@@ -145,7 +145,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                 ),
 
                 const SizedBox(height: 24,),
-                const Text("HSC Details",style: mainBlackHeading,),
+                const Text("HSC Details",style: headingInCard,),
                 const SizedBox(height: 24,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -186,7 +186,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                   ],
                 ),
                 const SizedBox(height: 24,),
-                const Text("UG Details",style: mainBlackHeading,),
+                const Text("UG Details",style: headingInCard,),
                 const SizedBox(height: 24,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -233,7 +233,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
           const SizedBox(height: 24,),
           GestureDetector(
             onTap: (){
-              const imageProvider = AssetImage('assets/images/profile.jpg');
+              const imageProvider = AssetImage('assets/images/sop.jpg');
               showImageViewer(context, imageProvider, onViewerDismissed: () {
                 print("dismissed");
               });
@@ -251,7 +251,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
           ),
           GestureDetector(
             onTap: (){
-              const imageProvider = AssetImage('assets/images/profile.jpg');
+              const imageProvider = AssetImage('assets/images/bon.jpg');
               showImageViewer(context, imageProvider, onViewerDismissed: () {
                 print("dismissed");
               });

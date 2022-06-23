@@ -59,7 +59,7 @@ class Home_Page extends StatelessWidget{
       ),
       child: const Padding(
       padding: EdgeInsets.all(10),
-      child:  Text('Doner',
+      child:  Text('Donor',
       style: TextStyle(
       color: Colors.green,
       fontSize: 20,
@@ -69,7 +69,7 @@ class Home_Page extends StatelessWidget{
       ),
       const SizedBox(width: 30.0),
       ElevatedButton(onPressed: () {
-        Navigator.pushNamed(context, '/login');
+        Navigator.pushNamed(context, '/s-login');
       },
       style: ElevatedButton.styleFrom(
       primary: const Color(0xFFFFE9EF),

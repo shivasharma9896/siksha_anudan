@@ -31,10 +31,14 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
         physics: const BouncingScrollPhysics(),
         children: [
           const SizedBox(height: 50),
-          const CircleAvatar(
-            minRadius: 60,
-            maxRadius: 70,
-            backgroundImage: AssetImage('assets/images/profile.jpg'),
+          Container(
+            height: 200,
+            width: 200,
+            child: const CircleAvatar(
+              minRadius: 30,
+              maxRadius: 100,
+              backgroundImage: AssetImage('assets/images/profile.jpg'),
+            ),
           ),
 
           const SizedBox(height: 24),

@@ -358,11 +358,11 @@ class _Registration_Student extends State<Registration_Student> {
     );
 
     return Scaffold(
-
-      body: Container(
-
-        child: stepper,
-      ),
+      appBar: AppBar(
+          title: const Text('Student Registration'),
+    ),
+      body:
+          Container(child: stepper),
     );
   }
 
