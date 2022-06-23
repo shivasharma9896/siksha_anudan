@@ -122,7 +122,7 @@ class _AppTextFieldState extends State<AppTextField> {
           }
               : null,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.arrow_drop_down_outlined),
+            prefixIcon: const Icon(Icons.arrow_drop_down_outlined),
             filled: true,
             fillColor: const Color(0xffb1e6ffff),
 

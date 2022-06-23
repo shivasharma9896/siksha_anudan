@@ -27,12 +27,12 @@ class _Registration_Student extends State<Registration_Student> {
   //TextEditingController _dayvalue=TextEditingController();
   //TextEditingController _monvalue=TextEditingController();
   //TextEditingController _yearvalue=TextEditingController();
-  TextEditingController _controller3 = TextEditingController();
+  final TextEditingController _controller3 = TextEditingController();
   String? _dayvalue = '';
   String? _monvalue = '';
   String? _yearvalue = '';
   //String _valueToValidate3 = '';
-  String _valueSaved3 = '';
+  final String _valueSaved3 = '';
   TextEditingController highschoolcollegename=TextEditingController();
   TextEditingController highschoolboard=TextEditingController();
   TextEditingController highschoolpercent=TextEditingController();
@@ -50,7 +50,7 @@ class _Registration_Student extends State<Registration_Student> {
       final imagePermanent = File(image.path);
 
       setState(() {
-        this._photo = imagePermanent;
+        _photo = imagePermanent;
       });
     }
     on PlatformException catch(e){
@@ -65,7 +65,7 @@ class _Registration_Student extends State<Registration_Student> {
       final imagePermanent = File(image.path);
 
       setState(() {
-        this._signature = imagePermanent;
+        _signature = imagePermanent;
       });
     }
     on PlatformException catch(e){
@@ -80,7 +80,7 @@ class _Registration_Student extends State<Registration_Student> {
       final imagePermanent = File(image.path);
 
       setState(() {
-        this._sop = imagePermanent;
+        _sop = imagePermanent;
       });
     }
     on PlatformException catch(e){
@@ -410,8 +410,8 @@ class _Registration_Student extends State<Registration_Student> {
                         fontWeight: FontWeight.bold
                     ),
                     ),
-                    SizedBox(width: 140-46,),
-                    Text('${_dayvalue}/${_monvalue}/${_yearvalue}',style: const TextStyle(
+                    const SizedBox(width: 140-46,),
+                    Text('$_dayvalue/$_monvalue/$_yearvalue',style: const TextStyle(
                         fontWeight: FontWeight.w300
                     ),
                     ),
@@ -484,7 +484,7 @@ Widget CustomButton({
   required IconData icon,
   required VoidCallback onClick,
 }) {
-  return Container(
+  return SizedBox(
     width: 280,
     child: ElevatedButton(
       onPressed: onClick,

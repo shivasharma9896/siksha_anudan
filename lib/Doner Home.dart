@@ -1,5 +1,3 @@
-import 'package:drop_down_list/drop_down_list.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:siksha_anudan/DonerProfile_Page.dart';
 import 'package:siksha_anudan/History_Page.dart';
@@ -16,9 +14,9 @@ class DonerHome extends StatefulWidget {
 class _DonerHomeState extends State<DonerHome> {
   int currentIndex=0;
   final screens=[
-    SearchStudent_Page(),
-    History_Page(),
-    DonerProfile_Page(),
+    const SearchStudent_Page(),
+    const History_Page(),
+    const DonerProfile_Page(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class _DonerHomeState extends State<DonerHome> {
         currentIndex: currentIndex,
         showUnselectedLabels: false,
         onTap:(index)=> setState(()=>currentIndex=index) ,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(LineIcons.search),
             label: 'Search',

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -79,14 +81,15 @@ class _SearchStudent_Page extends State<SearchStudent_Page> {
   void initState(){
     super.initState();
     getCurrentUser();
-  }
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => (context));
+    }
+
 
   void getCurrentUser()async{
     try{
-      final user=await _auth.currentUser!;
-      if(user!=null){
-        loggedUser=user;
-      }
+      final user=_auth.currentUser!;
+      loggedUser=user;
       print("user email");
       print(loggedUser.email);
     }
@@ -119,10 +122,10 @@ class _SearchStudent_Page extends State<SearchStudent_Page> {
                   ),
                 ],
               ),
-              Search_Profile_Card(),
-              Search_Profile_Card(),
-              Search_Profile_Card(),
-              Search_Profile_Card(),
+              const Search_Profile_Card(),
+              const Search_Profile_Card(),
+              const Search_Profile_Card(),
+              const Search_Profile_Card(),
             ]
         ),
       ),

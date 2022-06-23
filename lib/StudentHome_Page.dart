@@ -1,9 +1,6 @@
-import 'package:drop_down_list/drop_down_list.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:siksha_anudan/DonerProfile_Page.dart';
-import 'package:siksha_anudan/History_Page.dart';
-import 'Search_Student_Page.dart';
+import 'package:siksha_anudan/StudentCurrentProgress_Page.dart';
 import 'package:line_icons/line_icons.dart';
 
 class StudentHome extends StatefulWidget {
@@ -16,9 +13,9 @@ class StudentHome extends StatefulWidget {
 class _StudentHomeState extends State<StudentHome> {
   int currentIndex=0;
   final screens=[
-    SearchStudent_Page(),
-    History_Page(),
-    DonerProfile_Page(),
+    const StudentCurrentPage(),
+
+    const DonerProfile_Page(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -27,15 +24,12 @@ class _StudentHomeState extends State<StudentHome> {
         currentIndex: currentIndex,
         showUnselectedLabels: false,
         onTap:(index)=> setState(()=>currentIndex=index) ,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(LineIcons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(LineIcons.history),
-            label: 'History',
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(LineIcons.user),
             label: 'Profile',

@@ -13,6 +13,14 @@ const mainBlackHeading=TextStyle(
     fontWeight: FontWeight.w700
 );
 
+const headingInCard=TextStyle(
+    fontSize: 40,
+    // color: Color(0xFFAEFEFF),
+    color: Colors.white,
+    fontWeight: FontWeight.w700
+);
+
+
 const smallBlackHeading=TextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w700
@@ -27,6 +35,11 @@ const bigTextGreenHeading=TextStyle(
   fontSize: 30,
   color: Colors.green,
   fontWeight: FontWeight.w700,
+);
+
+final limeCard=BoxDecoration(
+    color: Colors.lime,
+    borderRadius: BorderRadius.circular(10)
 );
 // Drop Down
 const kDone = 'Done';

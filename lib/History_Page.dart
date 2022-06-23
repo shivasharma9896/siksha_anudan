@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'BottomNav.dart';
-import 'Profile_card.dart';
 import 'History_Student_Card.dart';
 void main() {
   runApp(const History_Page());

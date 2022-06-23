@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:siksha_anudan/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -78,11 +77,11 @@ class _ForgetPass_PageState extends State<ForgetPass_Page> {
                         doUserResetPassword();
 
                         showDialog(context: context, builder:(_)=> AlertDialog(
-                          title: Text("Forgot Password"),
-                          content: Text('Password reset instructions have been sent to email!'),
+                          title: const Text("Forgot Password"),
+                          content: const Text('Password reset instructions have been sent to email!'),
                           actions: [
                             FloatingActionButton(
-                                child: Text("ok"),
+                                child: const Text("ok"),
                                 onPressed:(){
                                   Navigator.of(context).pop();
                                   Navigator.pop(context);
@@ -110,7 +109,7 @@ class _ForgetPass_PageState extends State<ForgetPass_Page> {
                   ],
                 ),
               ),
-              SizedBox(height: 120,),
+              const SizedBox(height: 120,),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
@@ -136,11 +135,11 @@ class _ForgetPass_PageState extends State<ForgetPass_Page> {
 
   catch(e) {
       AlertDialog(
-        title: Text("Forgot Password"),
-        content: Text('You are not a registered user!'),
+        title: const Text("Forgot Password"),
+        content: const Text('You are not a registered user!'),
         actions: [
           FloatingActionButton(
-              child: Text("Re enter Email"),
+              child: const Text("Re enter Email"),
               onPressed:(){
               })
         ],
