@@ -48,8 +48,8 @@ class _BottomPageState extends State<BottomPage> {
               gap: 8,
               activeColor: Colors.lime,
               iconSize: 24,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: Duration(milliseconds: 400),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              duration: const Duration(milliseconds: 400),
               tabBackgroundColor: Colors.grey[100]!,
               color: Colors.lime,
               tabs: const[

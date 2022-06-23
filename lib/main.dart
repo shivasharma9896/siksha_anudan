@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:siksha_anudan/Doner%20Home.dart';
-import 'package:siksha_anudan/History_Page.dart';
+import 'package:siksha_anudan/Doner_ViewStudent_Page.dart';
+import 'package:siksha_anudan/Home_Page.dart';
 import 'package:siksha_anudan/Login_Page.dart';
 import 'Login_Page.dart';
-import 'Search_Student_Page.dart';
-import 'BottomNav.dart';
-import 'Home_Page.dart';
 import 'ForgetPassword.dart';
 import 'Registration_Student_Page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,7 +12,7 @@ import 'DonerProfile_Page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -28,11 +26,12 @@ class MyApp extends StatelessWidget {
       ),
       //initialRoute: '/',
       routes: {
-        '/login': (context) =>  Login_Page(),
-        '/registration': (context) =>  Registration_Student(),
-        '/profile': (context) =>  DonerProfile_Page(),
-        '/d-home': (context) =>  DonerHome(),
-        '/forgot-pass': (context) =>  ForgetPass_Page(),
+        '/login': (context) =>  const Login_Page(),
+        '/registration': (context) =>  const Registration_Student(),
+        '/profile': (context) =>  const DonerProfile_Page(),
+        '/d-home': (context) =>  const DonerHome(),
+        '/forgot-pass': (context) =>  const ForgetPass_Page(),
+        '/student-profile': (context) =>  const DonerViewStudent_Page(),
       },
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -51,9 +50,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       backgroundColor: Colors.white,
-      body: Home_Page(),
+      body: DonerViewStudent_Page(),
     );
   }
 }

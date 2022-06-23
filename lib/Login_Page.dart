@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:siksha_anudan/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -15,6 +14,7 @@ class Login_Page extends StatefulWidget {
 }
 
 class _Login_PageState extends State<Login_Page> {
+  bool _passwordVisible=false;
   final _auth=FirebaseAuth.instance;
   String email="";
   String password="";
@@ -83,8 +83,22 @@ class _Login_PageState extends State<Login_Page> {
                         password=value;
                       },
                       textAlign: TextAlign.center,
-                      obscureText: true,
+                      obscureText: !_passwordVisible,
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
                         hintText: 'Enter your Password',
                         hintStyle:const TextStyle(color: Colors.green),
                         contentPadding: const EdgeInsets.all(15),
@@ -119,9 +133,7 @@ class _Login_PageState extends State<Login_Page> {
 
                         try{
                           final user=await _auth.signInWithEmailAndPassword(email: email, password: password);
-                          if(user!=null) {
-                            Navigator.pushNamed(context, '/d-home');
-                          }
+                          Navigator.pushNamed(context, '/d-home');
                         }
 
                         catch(e){

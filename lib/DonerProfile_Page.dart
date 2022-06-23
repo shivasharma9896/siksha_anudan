@@ -1,11 +1,8 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'BottomNav.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'constants.dart';
 import 'TextFieldWidget.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class DonerProfile_Page  extends StatefulWidget {
@@ -30,11 +27,11 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 32),
-        physics: BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        physics: const BouncingScrollPhysics(),
         children: [
           const SizedBox(height: 50),
-          CircleAvatar(
+          const CircleAvatar(
             minRadius: 60,
             maxRadius: 70,
             backgroundImage: AssetImage('assets/images/profile.jpg'),
@@ -43,9 +40,9 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
           const SizedBox(height: 24),
           Row(
             children: [
-              SizedBox(width: 150,),
-              Text("Editable ",style: bigTextGreenHeading,),
-              SizedBox(width: 10,),
+              const SizedBox(width: 150,),
+              const Text("Editable ",style: bigTextGreenHeading,),
+              const SizedBox(width: 10,),
               FlutterSwitch(
                 activeColor: Colors.lime,
                 width: 60.0,
@@ -114,7 +111,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
           Center(
             child:ElevatedButton(onPressed: () async{
               if(status==true){
-              print(name+" "+email+" "+panCard+" "+phoneNumber+" "+address);
+              print("$name $email $panCard $phoneNumber $address");
               }
 
             },
