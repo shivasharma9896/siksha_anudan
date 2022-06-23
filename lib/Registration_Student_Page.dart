@@ -18,6 +18,7 @@ class Registration_Student extends StatefulWidget {
 
 class _Registration_Student extends State<Registration_Student> {
   int _activeStepIndex = 0;
+  final _formKey = GlobalKey<FormState>();
   TextEditingController name=TextEditingController();
   TextEditingController fname=TextEditingController();
   TextEditingController mname=TextEditingController();
@@ -94,12 +95,15 @@ class _Registration_Student extends State<Registration_Student> {
 
     return File(imagePath).copy(image.path);
   }
+
   List<Step> stepList() => [
         Step(
             state:_activeStepIndex<=0?StepState.editing : StepState.complete,
             isActive:_activeStepIndex>=0,
             title: const Text('Personal Information'),
-            content: Container(
+            content: SingleChildScrollView(
+              child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment:CrossAxisAlignment.start,
@@ -107,12 +111,19 @@ class _Registration_Student extends State<Registration_Student> {
                   const SizedBox(
                     height: 8,
                   ),
-                  TextField(
+                  TextFormField(
                     controller: name,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Full Name',
                     ),
+                    validator:(name){
+                      if(name!.isEmpty ||! RegExp(r'[a-z A-Z]+$').hasMatch(name!)){
+                        return "Invalid";
+                      }else{
+                        return null;
+                      }
+                    }
                   ),
                   const SizedBox(
                     height: 8,
@@ -207,7 +218,8 @@ class _Registration_Student extends State<Registration_Student> {
                   ),
                 ],
               ),
-            )
+            ),
+  )
         ),
         Step(
             state:_activeStepIndex<=1?StepState.editing : StepState.complete,
@@ -259,6 +271,7 @@ class _Registration_Student extends State<Registration_Student> {
                       border: OutlineInputBorder(),
                       labelText: 'Percent',
                     ),
+
                   ),
                   const SizedBox(
                     height: 12,
@@ -523,16 +536,15 @@ Widget CustomButton({
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
         body: Stepper(
           currentStep: _activeStepIndex,
             steps: stepList(),
           onStepContinue: (){
-           if(_activeStepIndex<(stepList().length-1)){
-             _activeStepIndex+=1;
-           }
-           setState((){
 
+           setState((){
+             if(_activeStepIndex<(stepList().length-1) && _formKey.currentState!.validate()){
+               _activeStepIndex+=1;
+             }
            });
           },
           onStepCancel: (){
