@@ -173,7 +173,7 @@ class _Login_PageState extends State<Login_Page> {
                     Center(
                       child:ElevatedButton(onPressed: () async{
 
-                            Navigator.pushNamed(context, '/registration');
+                            Navigator.pushNamed(context, '/d-registration');
                       },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFFFE9EF),

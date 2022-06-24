@@ -3,6 +3,7 @@ import 'package:siksha_anudan/Doner%20Home.dart';
 import 'package:siksha_anudan/Doner_ViewStudent_Page.dart';
 import 'package:siksha_anudan/Home_Page.dart';
 import 'package:siksha_anudan/Login_Page.dart';
+import 'package:siksha_anudan/Registration_Donar_Page.dart';
 import 'Login_Page.dart';
 import 'ForgetPassword.dart';
 import 'Registration_Student_Page.dart';
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) =>  const Login_Page(),
         '/s-login': (context) =>  const SLogin_Page(),
-        '/registration': (context) =>  const Registration_Student(),
+        '/s-registration': (context) =>  const Registration_Student(),
+        '/d-registration': (context) =>  const Registration_Donor(),
         '/profile': (context) =>  const DonerProfile_Page(),
         '/d-home': (context) =>  const DonerHome(),
         '/s-home':(context) =>  const StudentHome(),
