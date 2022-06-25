@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,13 +23,20 @@ class _Registration_Student extends State<Registration_Student> {
   final TextEditingController _phonenum = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final TextEditingController highschoolcollegename = TextEditingController();
+  final TextEditingController highschoolboard = TextEditingController();
+  final TextEditingController highschoolpercent = TextEditingController();
+  final TextEditingController intermediatecollegename = TextEditingController();
+  final TextEditingController intermediateboard = TextEditingController();
+  final TextEditingController intermediatepercent = TextEditingController();
+
   String? _dayvalue = '';
   String? _monvalue = '';
   String? _yearvalue = '';
   File? _photo;
   File? _signature;
   File? _aadhar;
-  Future getPhoto(ImageSource source) async{
+  Future getPhoto(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
@@ -38,12 +46,12 @@ class _Registration_Student extends State<Registration_Student> {
       setState(() {
         this._photo = imagePermanent;
       });
-    }
-    on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print('Failed to pick image:$e');
     }
   }
-  Future getSignature(ImageSource source) async{
+
+  Future getSignature(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
@@ -53,12 +61,12 @@ class _Registration_Student extends State<Registration_Student> {
       setState(() {
         this._signature = imagePermanent;
       });
-    }
-    on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print('Failed to pick image:$e');
     }
   }
-  Future getsop(ImageSource source) async{
+
+  Future getsop(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
@@ -68,27 +76,25 @@ class _Registration_Student extends State<Registration_Student> {
       setState(() {
         this._aadhar = imagePermanent;
       });
-    }
-    on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print('Failed to pick image:$e');
     }
   }
-  Future<File> saveFilePermanentely(String imagePath) async{
-    final directory =await getApplicationDocumentsDirectory();
-    final name=basename(imagePath);
-    final image=File('${directory.path}/$name');
+
+  Future<File> saveFilePermanentely(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
 
     return File(imagePath).copy(image.path);
   }
+
   @override
   Widget build(BuildContext context) {
-
     final steps = [
       CoolStep(
-
         title: 'Basic Information',
         subtitle: 'Please fill some of the basic information to get started',
-
         content: Form(
           key: _formKey,
           child: Column(
@@ -118,6 +124,11 @@ class _Registration_Student extends State<Registration_Student> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Email address is required';
+                  }
+                  if (!RegExp(
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                      .hasMatch(value!)) {
+                    return "Invalid Email Id";
                   } else {
                     return null;
                   }
@@ -133,6 +144,10 @@ class _Registration_Student extends State<Registration_Student> {
                   }
                   if (value.length != 10) {
                     return "Please enter valid phone number";
+                  }
+                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                      .hasMatch(value!)) {
+                    return "Invalid Phone Number";
                   } else {
                     return null;
                   }
@@ -146,8 +161,10 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value!.isEmpty) {
                     return 'Address is required';
                   }
-                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
-                    return "Invalid(Special Character are not allowed)";
+                  if (!RegExp(r'[a-zA-Z\-0-9]+$').hasMatch(value!) &&
+                      !RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                          .hasMatch(value!)) {
+                    return "Invalid Address";
                   }
                   if (value.length < 3) {
                     return "Cannot be shorter than 3 Character";
@@ -233,6 +250,177 @@ class _Registration_Student extends State<Registration_Student> {
         },
       ),
       CoolStep(
+        title: 'Educational Qualification',
+        subtitle: 'Enter you education you have been done so far',
+        content: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Container(
+                child: const Text(
+                  "High School Details",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              _buildTextField(
+                labelText: 'School Name',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'School Name is required';
+                  }
+                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                    return "Invalid(Special Character are not allowed)";
+                  }
+                  if (value.length < 5) {
+                    return "Cannot be shorter than 5 Character";
+                  }
+                  if (value.length > 30) {
+                    return "Cannot be larger than 30 Character";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: highschoolcollegename,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: CustomDropdown(
+                  // fillColor: Colors.alabaster,
+                  borderRadius: BorderRadius.circular(5),
+                  hintText: 'Board',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[600],
+                  ),
+                  items: const ['State Board', 'CBSE Board', 'ICSE Board'],
+                  controller: highschoolboard,
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              _buildTextField(
+                labelText: 'Percent',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Percent is required';
+                  }
+                  // if (!RegExp(r'^(\d+|\d*[.]\d+)%?$').hasMatch(value!)) {
+                  //   return "Invalid(Special Character are not allowed)";
+                  // }
+                  if (value.length != 2) {
+                    return 'Invalid Percentage';
+                  }
+                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                      .hasMatch(value!)) {
+                    return "Percent cannot have Special Character/Alphabet";
+                  }
+                  else {
+                    return null;
+                  }
+                },
+                controller: highschoolpercent,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Container(
+                child: const Text(
+                  "Intermediate Details",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              _buildTextField(
+                labelText: 'School Name',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'School Name is required';
+                  }
+                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                    return "Invalid(Special Character are not allowed)";
+                  }
+                  if (value.length < 5) {
+                    return "Cannot be shorter than 5 Character";
+                  }
+                  if (value.length > 30) {
+                    return "Cannot be larger than 30 Character";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: intermediatecollegename,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: CustomDropdown(
+                  // fillColor: Colors.alabaster,
+                  borderRadius: BorderRadius.circular(5),
+                  hintText: 'Board',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[600],
+                  ),
+                  items: const ['State Board', 'CBSE Board', 'ICSE Board'],
+                  controller: intermediateboard,
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              _buildTextField(
+                labelText: 'Percent',
+
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Percent is required';
+                  }
+                  // if (!RegExp(r'^(\d+|\d*[.]\d+)%?$').hasMatch(value!)) {
+                  //   return "Invalid(Special Character are not allowed)";
+                  // }
+                  if (value.length != 2) {
+                    return 'Invalid Percentage';
+                  }
+                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                      .hasMatch(value!)) {
+                    return "Percent cannot have Special Character/Alphabet";
+                  }
+                  else {
+                    return null;
+                  }
+                },
+                controller: intermediatepercent,
+              ),
+            ],
+          ),
+        ),
+        validation: () {
+          if (!_formKey.currentState!.validate()) {
+            return 'Fill form correctly';
+          }
+          return null;
+        },
+      ),
+      CoolStep(
           title: 'Document Upload',
           subtitle: 'To verify the identity of yours',
           content: Center(
@@ -246,10 +434,11 @@ class _Registration_Student extends State<Registration_Student> {
                   const SizedBox(
                     height: 20,
                   ),
+                  //'assets/images/siksha_logo.svg'
                   _photo != null
                       ? Image.file(_photo!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.network('images/default-placeholder-image.png'),
+                      : Image.asset('images/default-placeholder-image.png'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -264,7 +453,7 @@ class _Registration_Student extends State<Registration_Student> {
                   _signature != null
                       ? Image.file(_signature!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.network('images/default-placeholder-image.png'),
+                      : Image.asset('images/default-placeholder-image.png'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -279,36 +468,47 @@ class _Registration_Student extends State<Registration_Student> {
                   _aadhar != null
                       ? Image.file(_aadhar!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.network('images/default-placeholder-image.png'),
+                      : Image.asset('images/default-placeholder-image.png'),
                 ],
               )),
-          validation: () {  }),
+          validation: () {}),
       CoolStep(
           title: 'Confirmation',
-          subtitle: 'Recheck the entries you have made. You can change some of them in future',
+          subtitle:
+          'Recheck the entries you have made. You can change some of them in future',
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(child: ClipOval(child:_photo != null?Image.file(_photo!,width:250,height:250,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),)),
-              const SizedBox(height: 40,),
+              Center(
+                  child: ClipOval(
+                    child: _photo != null
+                        ? Image.file(_photo!,
+                        width: 250, height: 250, fit: BoxFit.cover)
+                        :Image.asset('images/default-placeholder-image.png'),
+                  )),
+              const SizedBox(
+                height: 40,
+              ),
 
               apperance(
                 title: 'Name',
                 value: _name.text,
-                a: 134,
+                a: 94,
               ),
               Container(
                 child: Row(
                   children: [
-                    const Text('Date of Birth',style: TextStyle(
-                        fontWeight: FontWeight.bold
+                    const Text(
+                      'Date of Birth',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(
+                      width: 51,
                     ),
-                    const SizedBox(width: 91,),
-                    Text('$_dayvalue/$_monvalue/$_yearvalue',style: const TextStyle(
-                        fontWeight: FontWeight.w300
-                    ),
+                    Text(
+                      '$_dayvalue/$_monvalue/$_yearvalue',
+                      style: const TextStyle(fontWeight: FontWeight.w300),
                     ),
                   ],
                 ),
@@ -317,19 +517,19 @@ class _Registration_Student extends State<Registration_Student> {
               apperance(
                 title: 'Email',
                 value: _email.text,
-                a: 183-48,
+                a: 95,
               ),
 
               apperance(
-                title:'Phone Number',
-                value:_phonenum.text,
-                a:76,
+                title: 'Phone Number',
+                value: _phonenum.text,
+                a: 36,
               ),
               apperance(
                 title: 'Address',
                 value: _address.text,
                 // a: 166,
-                a:116,
+                a: 78,
               ),
               // Text('Date of Birth : ${_dayvalue}/${_monvalue}/${_yearvalue}',
               //   style: const TextStyle(
@@ -337,13 +537,72 @@ class _Registration_Student extends State<Registration_Student> {
               // ),
               // ),
 
-              const SizedBox(height: 30,),
+              const SizedBox(
+                height: 40,
+              ),
+              Center(
+                child: Container(
+                  child:const Text("High School Details",style: TextStyle(
+                    color: Colors.grey,
+                  ),),
+                ),
+              ),
               const SizedBox(height: 20,),
-              const SizedBox(height: 40,),
-              Center(child: _signature != null?Image.file(_signature!,width:300,height:150,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),),
+              //Text('School Name     ${highschoolcollegename.text}'),
+              apperance(
+                title: 'School Name',
+                value: highschoolcollegename.text,
+                // a: 88,
+                a:47,
+              ),
+              //Text('Board    ${highschoolboard.text}'),
+              apperance(
+                title: 'Board',
+                value: highschoolboard.text,
+                a: 92,
+              ),
+              //Text('Percent    : ${highschoolpercent.text}'),
+              apperance(
+                title: 'Percent',
+                value: highschoolpercent.text,
+                a: 125-44,
+              ),
+              const SizedBox(height: 30,),
+              Center(
+                child: Container(
+                  child:const Text("Intermediate Details",style: TextStyle(
+                    color: Colors.grey,
+                  ),),
+                ),
+              ),
+              //Text('School Name    : ${intermediatecollegename.text}'),
+              const SizedBox(height: 20,),
+              apperance(
+                title: 'School Name',
+                value: intermediatecollegename.text,
+                a: 47,
+              ),
+              // Text('Board   : ${intermediateboard.text}'),
+              apperance(
+                title: 'Board',
+                value: intermediateboard.text,
+                a: 134-43,
+              ),
+              //Text('Percent    : ${intermediatepercent.text}'),
+              apperance(
+                title: 'Percent',
+                value: intermediatepercent.text,
+                a: 125-43,
+              ),
+              Center(
+                child: _signature != null
+                    ? Image.file(_signature!,
+                    width: 300, height: 150, fit: BoxFit.cover)
+                    : Image.asset('images/default-placeholder-image.png'),
+              ),
             ],
           ),
-          validation: () {  }),
+          validation: () {}),
     ];
 
     final stepper = CoolStepper(
@@ -358,11 +617,33 @@ class _Registration_Student extends State<Registration_Student> {
     );
 
     return Scaffold(
+<<<<<<< Updated upstream
       appBar: AppBar(
           title: const Text('Student Registration'),
     ),
       body:
           Container(child: stepper),
+=======
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 50,
+          ),
+          const Text(
+            "Student Registration",
+            style: TextStyle(
+              color: Colors.green,
+              fontWeight: FontWeight.w900,
+              fontSize: 25,
+            ),
+          ),
+          const SizedBox(
+            height: 25,
+          ),
+          Expanded(child: stepper),
+        ],
+      ),
+>>>>>>> Stashed changes
     );
   }
 
@@ -383,7 +664,6 @@ class _Registration_Student extends State<Registration_Student> {
     );
   }
 
-
   Widget CustomButton({
     required String title,
     required IconData icon,
@@ -396,33 +676,37 @@ class _Registration_Student extends State<Registration_Student> {
         child: Row(
           children: [
             Icon(icon),
-            const SizedBox(width: 20,),
+            const SizedBox(
+              width: 20,
+            ),
             Center(child: Text(title))
           ],
         ),
       ),
     );
   }
+
   Widget apperance({
     required String title,
     required String value,
     required double a,
-  }){
+  }) {
     return Container(
       child: Row(
         children: [
-          Text(title,style: const TextStyle(
-              fontWeight: FontWeight.w900
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w900),
           ),
+          SizedBox(
+            width: a,
           ),
-          SizedBox(width: a,),
-          Text(value,style: const TextStyle(
-              fontWeight: FontWeight.w300
-          ),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w300),
           ),
         ],
       ),
-
     );
   }
 }
