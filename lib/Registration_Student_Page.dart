@@ -617,13 +617,6 @@ class _Registration_Student extends State<Registration_Student> {
     );
 
     return Scaffold(
-<<<<<<< Updated upstream
-      appBar: AppBar(
-          title: const Text('Student Registration'),
-    ),
-      body:
-          Container(child: stepper),
-=======
       body: Column(
         children: [
           const SizedBox(
@@ -643,7 +636,7 @@ class _Registration_Student extends State<Registration_Student> {
           Expanded(child: stepper),
         ],
       ),
->>>>>>> Stashed changes
+
     );
   }
 

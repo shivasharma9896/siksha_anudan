@@ -410,11 +410,25 @@ class _Registration_Donor extends State<Registration_Donor > {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Doner Registration'),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 50,
+          ),
+          const Text(
+            "Donor Registration",
+            style: TextStyle(
+              color: Colors.green,
+              fontWeight: FontWeight.w900,
+              fontSize: 25,
+            ),
+          ),
+          const SizedBox(
+            height: 25,
+          ),
+          Expanded(child: stepper),
+        ],
       ),
-      body:
-      Container(child: stepper),
     );
   }
 
