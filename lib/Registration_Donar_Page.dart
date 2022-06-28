@@ -336,7 +336,7 @@ class _Registration_Donor extends State<Registration_Donor > {
               apperance(
                 title: 'Name',
                 value: _name.text,
-                a: 134,
+                a: 99,
               ),
               Container(
                 child: Row(
@@ -345,7 +345,7 @@ class _Registration_Donor extends State<Registration_Donor > {
                         fontWeight: FontWeight.bold
                     ),
                     ),
-                    const SizedBox(width: 91,),
+                    const SizedBox(width:56 ,),
                     Text('$_dayvalue/$_monvalue/$_yearvalue',style: const TextStyle(
                         fontWeight: FontWeight.w300
                     ),
@@ -357,31 +357,32 @@ class _Registration_Donor extends State<Registration_Donor > {
               apperance(
                 title: 'Email',
                 value: _email.text,
-                a: 183-48,
+                //a: 135,
+                a:100,
               ),
 
               apperance(
                 title:'Phone Number',
                 value:_phonenum.text,
-                a:76,
+                a:76-35,
               ),
               apperance(
                 title: 'Address',
                 value: _address.text,
                 // a: 166,
-                a:116,
+                a:120-35,
               ),
               apperance(
                 title: 'Aadhar Number',
                 value: _aadharC.text,
                 // a: 166,
-                a:116,
+                a:72-35,
               ),
               apperance(
                 title: 'Pancard Number',
                 value: _pancard.text,
                 // a: 166,
-                a:116,
+                a:65-35,
               ),
               // Text('Date of Birth : ${_dayvalue}/${_monvalue}/${_yearvalue}',
               //   style: const TextStyle(
