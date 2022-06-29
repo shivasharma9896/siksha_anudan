@@ -1,11 +1,16 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_stepper/cool_stepper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:siksha_anudan/Doner%20Home.dart';
+import 'package:siksha_anudan/model/Donor_model.dart';
 
 class Registration_Donor extends StatefulWidget {
   const Registration_Donor ({Key? key}) : super(key: key);
@@ -16,7 +21,8 @@ class Registration_Donor extends StatefulWidget {
 
 class _Registration_Donor extends State<Registration_Donor > {
   final _formKey = GlobalKey<FormState>();
-
+  final auth = FirebaseAuth.instance;
+ // final TextEditingController testname = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _phonenum = TextEditingController();
@@ -95,26 +101,62 @@ class _Registration_Donor extends State<Registration_Donor > {
           key: _formKey,
           child: Column(
             children: [
-              _buildTextField(
-                labelText: 'Name',
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Name is required';
-                  }
-                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
-                    return "Invalid(Special Character are not allowed)";
-                  }
-                  if (value.length < 3) {
-                    return "Cannot be shorter than 3 Character";
-                  }
-                  if (value.length > 15) {
-                    return "Cannot be larger than 15 Character";
-                  } else {
-                    return null;
-                  }
-                },
-                controller: _name,
-              ),
+
+            //First name field
+            TextFormField(
+            //autofocus: false,
+            controller: _name,
+            keyboardType: TextInputType.name,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Name is required';
+                }
+                if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                  return "Invalid(Special Character are not allowed)";
+                }
+                if (value.length < 3) {
+                  return "Cannot be shorter than 3 Character";
+                }
+                if (value.length > 15) {
+                  return "Cannot be larger than 15 Character";
+                } else {
+                  return null;
+                }
+              },
+            onSaved: (value) {
+              _name.text = value!;
+            },
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+                //contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                hintText: "test Name",
+                // border: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(10),
+                // )
+            ),
+          ),
+
+              // _buildTextField(
+              //   labelText: 'Name',
+              //   validator: (value) {
+              //     if (value!.isEmpty) {
+              //       return 'Name is required';
+              //     }
+              //     if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+              //       return "Invalid(Special Character are not allowed)";
+              //     }
+              //     if (value.length < 3) {
+              //       return "Cannot be shorter than 3 Character";
+              //     }
+              //     if (value.length > 15) {
+              //       return "Cannot be larger than 15 Character";
+              //     } else {
+              //       return null;
+              //     }
+              //   },
+              //   controller: _name,
+              //
+              // ),
               _buildTextField(
                 labelText: 'Email Address',
                 validator: (value) {
@@ -154,8 +196,8 @@ class _Registration_Donor extends State<Registration_Donor > {
                   if (value.length < 3) {
                     return "Cannot be shorter than 3 Character";
                   }
-                  if (value.length > 30) {
-                    return "Cannot be larger than 15 Character";
+                  if (value.length > 50) {
+                    return "Cannot be larger than 50 Character";
                   } else {
                     return null;
                   }
@@ -401,6 +443,8 @@ class _Registration_Donor extends State<Registration_Donor > {
     final stepper = CoolStepper(
       showErrorSnackbar: false,
       onCompleted: () {
+        Fluttertoast.showToast(msg: 'Registered successfully');
+        signUp(_email.text, _password.text);
         print('Steps completed!');
       },
       steps: steps,
@@ -490,5 +534,42 @@ class _Registration_Donor extends State<Registration_Donor > {
       ),
 
     );
+  }
+
+  void signUp(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      await auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {postDetailsToFirestore()})
+          .catchError((e) {
+        Fluttertoast.showToast(msg: e!.message);
+      });
+    }
+  }
+
+    postDetailsToFirestore() async{
+      //calling our firestore
+      //calling our model
+      //sending these values
+      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+      User? user = auth.currentUser;
+      DonorModel donorModel = DonorModel();
+
+      donorModel.email = user!.email;
+      donorModel.uid = user.uid;
+      donorModel.name = _name.text;
+      donorModel.phonenum = _phonenum.text;
+      donorModel.address = _address.text;
+      donorModel.aadharC = _aadharC.text;
+      donorModel.pancard = _pancard.text;
+
+      await firebaseFirestore
+          .collection("Donor")
+          .doc(user.uid)
+          .set(donorModel.toMap());
+      Fluttertoast.showToast(msg: "Account created successfully!");
+      //Navigator.pushNamed(this.context,'/d-home');
+      Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+      //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
   }
 }
