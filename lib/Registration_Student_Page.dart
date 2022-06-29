@@ -321,7 +321,7 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value.length != 2) {
                     return 'Invalid Percentage';
                   }
-                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                  if (!RegExp(r'^\d+([.]\d+)?%?$')
                       .hasMatch(value!)) {
                     return "Percent cannot have Special Character/Alphabet";
                   }
@@ -400,7 +400,7 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value.length != 2) {
                     return 'Invalid Percentage';
                   }
-                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                  if (!RegExp(r'^\d+([.]\d+)?%?$')
                       .hasMatch(value!)) {
                     return "Percent cannot have Special Character/Alphabet";
                   }
@@ -438,7 +438,7 @@ class _Registration_Student extends State<Registration_Student> {
                   _photo != null
                       ? Image.file(_photo!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.asset('images/default-placeholder-image.png'),
+                      : Image.asset('assets/images/default-placeholder-image.png'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -453,7 +453,7 @@ class _Registration_Student extends State<Registration_Student> {
                   _signature != null
                       ? Image.file(_signature!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.asset('images/default-placeholder-image.png'),
+                      : Image.asset('assets/images/default-placeholder-image.png'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -468,7 +468,7 @@ class _Registration_Student extends State<Registration_Student> {
                   _aadhar != null
                       ? Image.file(_aadhar!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.asset('images/default-placeholder-image.png'),
+                      : Image.asset('assets/images/default-placeholder-image.png'),
                 ],
               )),
           validation: () {}),
@@ -485,7 +485,7 @@ class _Registration_Student extends State<Registration_Student> {
                     child: _photo != null
                         ? Image.file(_photo!,
                         width: 250, height: 250, fit: BoxFit.cover)
-                        :Image.asset('images/default-placeholder-image.png'),
+                        :Image.asset('assets/images/default-placeholder-image.png'),
                   )),
               const SizedBox(
                 height: 40,
@@ -594,11 +594,12 @@ class _Registration_Student extends State<Registration_Student> {
                 value: intermediatepercent.text,
                 a: 125-43,
               ),
+              const SizedBox(height: 30,),
               Center(
                 child: _signature != null
                     ? Image.file(_signature!,
                     width: 300, height: 150, fit: BoxFit.cover)
-                    : Image.asset('images/default-placeholder-image.png'),
+                    : Image.asset('assets/images/default-placeholder-image.png'),
               ),
             ],
           ),
@@ -609,6 +610,7 @@ class _Registration_Student extends State<Registration_Student> {
       showErrorSnackbar: false,
       onCompleted: () {
         print('Steps completed!');
+
       },
       steps: steps,
       config: const CoolStepperConfig(
