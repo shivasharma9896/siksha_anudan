@@ -22,7 +22,6 @@ class Registration_Donor extends StatefulWidget {
 class _Registration_Donor extends State<Registration_Donor > {
   final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
- // final TextEditingController testname = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _phonenum = TextEditingController();
@@ -101,62 +100,27 @@ class _Registration_Donor extends State<Registration_Donor > {
           key: _formKey,
           child: Column(
             children: [
+              _buildTextField(
+                labelText: 'Name',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Name is required';
+                  }
+                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                    return "Invalid(Special Character are not allowed)";
+                  }
+                  if (value.length < 3) {
+                    return "Cannot be shorter than 3 Character";
+                  }
+                  if (value.length > 15) {
+                    return "Cannot be larger than 15 Character";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: _name,
 
-            //First name field
-            TextFormField(
-            //autofocus: false,
-            controller: _name,
-            keyboardType: TextInputType.name,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Name is required';
-                }
-                if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
-                  return "Invalid(Special Character are not allowed)";
-                }
-                if (value.length < 3) {
-                  return "Cannot be shorter than 3 Character";
-                }
-                if (value.length > 15) {
-                  return "Cannot be larger than 15 Character";
-                } else {
-                  return null;
-                }
-              },
-            onSaved: (value) {
-              _name.text = value!;
-            },
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-                //contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                hintText: "test Name",
-                // border: OutlineInputBorder(
-                //   borderRadius: BorderRadius.circular(10),
-                // )
-            ),
-          ),
-
-              // _buildTextField(
-              //   labelText: 'Name',
-              //   validator: (value) {
-              //     if (value!.isEmpty) {
-              //       return 'Name is required';
-              //     }
-              //     if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
-              //       return "Invalid(Special Character are not allowed)";
-              //     }
-              //     if (value.length < 3) {
-              //       return "Cannot be shorter than 3 Character";
-              //     }
-              //     if (value.length > 15) {
-              //       return "Cannot be larger than 15 Character";
-              //     } else {
-              //       return null;
-              //     }
-              //   },
-              //   controller: _name,
-              //
-              // ),
+              ),
               _buildTextField(
                 labelText: 'Email Address',
                 validator: (value) {

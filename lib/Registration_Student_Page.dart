@@ -1,12 +1,17 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_stepper/cool_stepper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:siksha_anudan/StudentHome_Page.dart';
+import 'package:siksha_anudan/model/Student_model.dart';
 
 class Registration_Student extends StatefulWidget {
   const Registration_Student({Key? key}) : super(key: key);
@@ -17,7 +22,7 @@ class Registration_Student extends StatefulWidget {
 
 class _Registration_Student extends State<Registration_Student> {
   final _formKey = GlobalKey<FormState>();
-
+  final auth = FirebaseAuth.instance;
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _phonenum = TextEditingController();
@@ -609,6 +614,8 @@ class _Registration_Student extends State<Registration_Student> {
     final stepper = CoolStepper(
       showErrorSnackbar: false,
       onCompleted: () {
+        Fluttertoast.showToast(msg: 'Registered successfully');
+        signUp(_email.text, _password.text);
         print('Steps completed!');
 
       },
@@ -704,4 +711,55 @@ class _Registration_Student extends State<Registration_Student> {
       ),
     );
   }
+
+  void signUp(String email, String password) async {
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      // if (e.code == 'weak-password') {
+      //   print('The password provided is too weak.');
+      // }
+      if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(msg: 'The account already exists for that email.');
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+    postDetailsToFirestore();
+  }
+
+  postDetailsToFirestore() async{
+    //calling our firestore
+    //calling our model
+    //sending these values
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = auth.currentUser;
+    StudentModel studentModel = StudentModel();
+
+    studentModel.email = user!.email;
+    studentModel.uid = user.uid;
+    studentModel.name = _name.text;
+    studentModel.phonenum = _phonenum.text;
+    studentModel.address = _address.text;
+    studentModel.highschoolcollegename = highschoolcollegename.text;
+    studentModel.highschoolboard = highschoolboard.text;
+    studentModel.highschoolpercent = highschoolpercent.text;
+    studentModel.intermediatecollegename = intermediatecollegename.text;
+    studentModel.intermediateboard = intermediateboard.text;
+    studentModel.intermediatepercent = intermediatepercent.text;
+
+    await firebaseFirestore
+        .collection("Student")
+        .doc(user.uid)
+        .set(studentModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully!");
+    //Navigator.pushNamed(this.context,'/d-home');
+    Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => StudentHome()), (route) => false);
+    //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+  }
+
 }
