@@ -8,6 +8,7 @@ import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:siksha_anudan/Doner%20Home.dart';
@@ -424,25 +425,28 @@ class _Registration_Donor extends State<Registration_Donor > {
       ),
     );
 
-    return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          const Text(
-            "Donor Registration",
-            style: TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.w900,
-              fontSize: 25,
+    return ModalProgressHUD(
+      inAsyncCall: _isLoading,
+      child: Scaffold(
+        body: Column(
+          children: [
+            const SizedBox(
+              height: 50,
             ),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Expanded(child: stepper),
-        ],
+            const Text(
+              "Donor Registration",
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.w900,
+                fontSize: 25,
+              ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Expanded(child: stepper),
+          ],
+        ),
       ),
     );
   }
@@ -509,14 +513,14 @@ class _Registration_Donor extends State<Registration_Donor > {
 
   void signUp(String email, String password) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
       if(_photo == null){
         Fluttertoast.showToast(msg: "Please upload Profile picture");
       }
       else{
-        setState(() {
-          _isLoading = true;
-        });
         final ref = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
@@ -528,9 +532,7 @@ class _Registration_Donor extends State<Registration_Donor > {
         Fluttertoast.showToast(msg: "Please upload Signature");
       }
       else{
-        setState(() {
-          _isLoading = true;
-        });
+
         final ref = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
@@ -542,9 +544,6 @@ class _Registration_Donor extends State<Registration_Donor > {
         Fluttertoast.showToast(msg: "Please upload Aadhar photo");
       }
       else{
-        setState(() {
-          _isLoading = true;
-        });
         final ref = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
