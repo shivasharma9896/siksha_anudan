@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/services.dart';
@@ -32,9 +33,13 @@ class _Registration_Donor extends State<Registration_Donor > {
   String? _dayvalue = '';
   String? _monvalue = '';
   String? _yearvalue = '';
+  String? photourl = "";
+  String? signurl = "";
+  String? aadharurl = "";
   File? _photo;
   File? _signature;
   File? _aadhar;
+  bool _isLoading = false;
   Future getPhoto(ImageSource source) async{
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -503,20 +508,44 @@ class _Registration_Donor extends State<Registration_Donor > {
 
   void signUp(String email, String password) async {
     try {
+
+      if(_photo == null){
+        Fluttertoast.showToast(msg: "Please upload documents");
+      }
+      else{
+        setState(() {
+          _isLoading = true;
+        });
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("DonorDocs")
+            .child(_name.text + '.jpg');
+        await ref.putFile(_photo!);
+        photourl = await ref.getDownloadURL();
+      }
+
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      postDetailsToFirestore();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(msg: 'The account already exists for that email.');
         print('The account already exists for that email.');
       }
     } catch (e) {
       print(e);
     }
-    postDetailsToFirestore();
+    finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
   }
 
     postDetailsToFirestore() async{
@@ -534,6 +563,7 @@ class _Registration_Donor extends State<Registration_Donor > {
       donorModel.address = _address.text;
       donorModel.aadharC = _aadharC.text;
       donorModel.pancard = _pancard.text;
+      donorModel.photourl = photourl;   //toString() laga ke bhi try krna
 
       await firebaseFirestore
           .collection("Donor")

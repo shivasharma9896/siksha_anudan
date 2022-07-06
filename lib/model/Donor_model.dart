@@ -7,8 +7,11 @@ class DonorModel{
   //String? password;
   String? aadharC;
   String? pancard;
+  String? photourl;
+  // String? signurl;
+  // String? aadharurl;
 
-  DonorModel({this.uid, this.name, this.email, this.phonenum, this.address, this.aadharC, this.pancard});
+  DonorModel({this.uid, this.name, this.email, this.phonenum, this.address, this.aadharC, this.pancard, this.photourl});
 
   //Reciving data from firebase
   factory DonorModel.fromMap(map){
@@ -21,6 +24,7 @@ class DonorModel{
     //  password: map['password'],
       aadharC: map['aadharC'],
       pancard: map['pancard'],
+      photourl: map['photourl']
     );
   }
 
@@ -35,6 +39,7 @@ class DonorModel{
     //  'password': password,
       'aadharC': aadharC,
       'pancard': pancard,
+      'photourl': photourl,
     };
   }
 
