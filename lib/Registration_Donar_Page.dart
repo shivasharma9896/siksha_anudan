@@ -36,13 +36,14 @@ class _Registration_Donor extends State<Registration_Donor > {
   String? photourl = "";
   String? signurl = "";
   String? aadharurl = "";
+  String? dob;
   File? _photo;
   File? _signature;
   File? _aadhar;
   bool _isLoading = false;
   Future getPhoto(ImageSource source) async{
     try {
-      final image = await ImagePicker().pickImage(source: source);
+      final image = await ImagePicker().pickImage(source: source, imageQuality: 70);
       if (image == null) return;
       //final imageTemporary = File(image.path);
       final imagePermanent = File(image.path);
@@ -508,21 +509,48 @@ class _Registration_Donor extends State<Registration_Donor > {
 
   void signUp(String email, String password) async {
     try {
-
+      dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
       if(_photo == null){
-        Fluttertoast.showToast(msg: "Please upload documents");
+        Fluttertoast.showToast(msg: "Please upload Profile picture");
       }
       else{
         setState(() {
           _isLoading = true;
         });
-
         final ref = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
-            .child(_name.text + '.jpg');
+            .child(_aadharC.text + '_photo' + '.jpg');
         await ref.putFile(_photo!);
         photourl = await ref.getDownloadURL();
+      }
+      if(_signature == null){
+        Fluttertoast.showToast(msg: "Please upload Signature");
+      }
+      else{
+        setState(() {
+          _isLoading = true;
+        });
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("DonorDocs")
+            .child(_aadharC.text + '_sign' + '.jpg');
+        await ref.putFile(_signature!);
+        signurl = await ref.getDownloadURL();
+      }
+      if(_aadhar == null){
+        Fluttertoast.showToast(msg: "Please upload Aadhar photo");
+      }
+      else{
+        setState(() {
+          _isLoading = true;
+        });
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("DonorDocs")
+            .child(_aadharC.text + '_aadhar' + '.jpg');
+        await ref.putFile(_aadhar!);
+        aadharurl = await ref.getDownloadURL();
       }
 
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -545,7 +573,6 @@ class _Registration_Donor extends State<Registration_Donor > {
         _isLoading = false;
       });
     }
-
   }
 
     postDetailsToFirestore() async{
@@ -563,7 +590,10 @@ class _Registration_Donor extends State<Registration_Donor > {
       donorModel.address = _address.text;
       donorModel.aadharC = _aadharC.text;
       donorModel.pancard = _pancard.text;
-      donorModel.photourl = photourl;   //toString() laga ke bhi try krna
+      donorModel.photourl = photourl;
+      donorModel.signurl = signurl;
+      donorModel.aadharurl = aadharurl;
+      donorModel.dob = dob;
 
       await firebaseFirestore
           .collection("Donor")

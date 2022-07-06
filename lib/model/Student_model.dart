@@ -4,6 +4,7 @@ class StudentModel{
   String? email;
   String? phonenum;
   String? address;
+  String? aadharC;
   //String? password;
   String? highschoolcollegename;
   String? highschoolboard;
@@ -11,10 +12,14 @@ class StudentModel{
   String? intermediatecollegename;
   String? intermediateboard;
   String? intermediatepercent;
+  String? photourl;
+  String? signurl;
+  String? aadharurl;
+  String? dob;
 
-  StudentModel({this.uid, this.name, this.email, this.phonenum, this.address, this.highschoolcollegename,
+  StudentModel({this.uid, this.name, this.email, this.phonenum, this.address, this.aadharC, this.highschoolcollegename,
     this.highschoolboard,this.highschoolpercent,this.intermediatecollegename, this.intermediateboard,
-    this.intermediatepercent});
+    this.intermediatepercent, this.photourl, this.signurl, this.aadharurl, this.dob});
 
   //Reciving data from firebase
   factory StudentModel.fromMap(map){
@@ -24,13 +29,18 @@ class StudentModel{
       email: map['email'],
       phonenum: map['phonenum'],
       address: map['address'],
+      aadharC: map['aadharC'],
       //  password: map['password'],
       highschoolcollegename: map['highschoolcollegename'],
       highschoolboard: map['highschoolboard'],
       highschoolpercent: map['highschoolpercent'],
       intermediatecollegename: map['intermediatecollegename'],
       intermediateboard: map['intermediateboard'],
-      intermediatepercent: map['intermediatepercent']
+      intermediatepercent: map['intermediatepercent'],
+      photourl: map['photourl'],
+      signurl: map['signurl'],
+      aadharurl: map['aadharurl'],
+      dob: map['dob']
     );
   }
 
@@ -49,6 +59,10 @@ class StudentModel{
       'intermediatecollegename': intermediatecollegename,
       'intermediateboard': intermediateboard,
       'intermediatepercent': intermediatepercent,
+      'photourl': photourl,
+      'signurl': signurl,
+      'aadharurl': aadharurl,
+      'dob': dob,
     };
   }
 

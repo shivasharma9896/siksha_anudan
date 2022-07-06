@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
@@ -28,6 +29,7 @@ class _Registration_Student extends State<Registration_Student> {
   final TextEditingController _phonenum = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final TextEditingController _aadharC = TextEditingController();
   final TextEditingController highschoolcollegename = TextEditingController();
   final TextEditingController highschoolboard = TextEditingController();
   final TextEditingController highschoolpercent = TextEditingController();
@@ -38,9 +40,14 @@ class _Registration_Student extends State<Registration_Student> {
   String? _dayvalue = '';
   String? _monvalue = '';
   String? _yearvalue = '';
+  String? photourl = "";
+  String? signurl = "";
+  String? aadharurl = "";
+  String? dob;
   File? _photo;
   File? _signature;
   File? _aadhar;
+  bool _isLoading = false;
   Future getPhoto(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -181,6 +188,25 @@ class _Registration_Student extends State<Registration_Student> {
                   }
                 },
                 controller: _address,
+              ),
+              _buildTextField(
+                //keyboardType:TextInputType.phone,
+                labelText: 'Enter Aadhar Number',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Aadhar is required';
+                  }
+                  if (value.length < 11) {
+                    return "Too Short";
+                  }
+                  if (value.length > 11) {
+                    return "Too long";
+                  } else {
+                    return null;
+                  }
+                },
+                //obscureText : true,
+                controller: _aadharC,
               ),
               _buildTextField(
                 //keyboardType:TextInputType.phone,
@@ -713,15 +739,60 @@ class _Registration_Student extends State<Registration_Student> {
   }
 
   void signUp(String email, String password) async {
-    try {
+      try {
+        dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
+        if(_photo == null){
+          Fluttertoast.showToast(msg: "Please upload Profile picture");
+        }
+        else{
+          setState(() {
+            _isLoading = true;
+          });
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child("StudentDocs")
+              .child(_aadharC.text + '_photo' + '.jpg');
+          await ref.putFile(_photo!);
+          photourl = await ref.getDownloadURL();
+        }
+        if(_signature == null){
+          Fluttertoast.showToast(msg: "Please upload Signature");
+        }
+        else{
+          setState(() {
+            _isLoading = true;
+          });
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child("StudentDocs")
+              .child(_aadharC.text + '_sign' + '.jpg');
+          await ref.putFile(_signature!);
+          signurl = await ref.getDownloadURL();
+        }
+        if(_aadhar == null){
+          Fluttertoast.showToast(msg: "Please upload Aadhar photo");
+        }
+        else{
+          setState(() {
+            _isLoading = true;
+          });
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child("StudentDocs")
+              .child(_aadharC.text + '_aadhar' + '.jpg');
+          await ref.putFile(_aadhar!);
+          aadharurl = await ref.getDownloadURL();
+        }
+
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+        postDetailsToFirestore();
     } on FirebaseAuthException catch (e) {
-      // if (e.code == 'weak-password') {
-      //   print('The password provided is too weak.');
-      // }
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      }
       if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: 'The account already exists for that email.');
         print('The account already exists for that email.');
@@ -729,7 +800,11 @@ class _Registration_Student extends State<Registration_Student> {
     } catch (e) {
       print(e);
     }
-    postDetailsToFirestore();
+    finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
   }
 
   postDetailsToFirestore() async{
@@ -745,12 +820,17 @@ class _Registration_Student extends State<Registration_Student> {
     studentModel.name = _name.text;
     studentModel.phonenum = _phonenum.text;
     studentModel.address = _address.text;
+    studentModel.aadharC = _aadharC.text;
     studentModel.highschoolcollegename = highschoolcollegename.text;
     studentModel.highschoolboard = highschoolboard.text;
     studentModel.highschoolpercent = highschoolpercent.text;
     studentModel.intermediatecollegename = intermediatecollegename.text;
     studentModel.intermediateboard = intermediateboard.text;
     studentModel.intermediatepercent = intermediatepercent.text;
+    studentModel.photourl = photourl;
+    studentModel.signurl = signurl;
+    studentModel.aadharurl = aadharurl;
+    studentModel.dob = dob;
 
     await firebaseFirestore
         .collection("Student")
