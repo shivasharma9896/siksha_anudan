@@ -133,11 +133,18 @@ class _Login_PageState extends State<Login_Page> {
 
                         try{
                           final user=await _auth.signInWithEmailAndPassword(email: email, password: password);
-                          Navigator.pushNamed(context, '/d-home');
+                          if(user!=null){
+                            Navigator.pushNamed(context, '/d-home');
+                          }
                         }
-
-                        catch(e){
-                          print(e);
+                        catch (error) {
+                          print(error);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Please enter correct id and password"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                         }
                         setState((){
                           showspinner=false;
