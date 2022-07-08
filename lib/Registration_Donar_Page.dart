@@ -415,7 +415,7 @@ class _Registration_Donor extends State<Registration_Donor > {
     final stepper = CoolStepper(
       showErrorSnackbar: false,
       onCompleted: () {
-        Fluttertoast.showToast(msg: 'Registered successfully');
+        //Fluttertoast.showToast(msg: 'Registered successfully');
         signUp(_email.text, _password.text);
         print('Steps completed!');
       },
@@ -427,6 +427,8 @@ class _Registration_Donor extends State<Registration_Donor > {
 
     return ModalProgressHUD(
       inAsyncCall: _isLoading,
+      opacity: 0.8,
+      color: Colors.black,
       child: Scaffold(
         body: Column(
           children: [
@@ -517,50 +519,39 @@ class _Registration_Donor extends State<Registration_Donor > {
         _isLoading = true;
       });
       dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
-      if(_photo == null){
-        Fluttertoast.showToast(msg: "Please upload Profile picture");
+      if(_photo == null || _signature ==null || _aadhar==null){
+        Fluttertoast.showToast(msg: "Please upload Documents");
       }
       else{
         final ref = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
-            .child(_aadharC.text + '_photo' + '.jpg');
+            .child('${_aadharC.text}_photo.jpg');
         await ref.putFile(_photo!);
         photourl = await ref.getDownloadURL();
-      }
-      if(_signature == null){
-        Fluttertoast.showToast(msg: "Please upload Signature");
-      }
-      else{
 
-        final ref = FirebaseStorage.instance
+        final ref1 = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
-            .child(_aadharC.text + '_sign' + '.jpg');
-        await ref.putFile(_signature!);
-        signurl = await ref.getDownloadURL();
-      }
-      if(_aadhar == null){
-        Fluttertoast.showToast(msg: "Please upload Aadhar photo");
-      }
-      else{
-        final ref = FirebaseStorage.instance
+            .child('${_aadharC.text}_sign.jpg');
+        await ref1.putFile(_signature!);
+        signurl = await ref1.getDownloadURL();
+
+        final ref3 = FirebaseStorage.instance
             .ref()
             .child("DonorDocs")
-            .child(_aadharC.text + '_aadhar' + '.jpg');
-        await ref.putFile(_aadhar!);
-        aadharurl = await ref.getDownloadURL();
+            .child('${_aadharC.text}_aadhar.jpg');
+        await ref3.putFile(_aadhar!);
+        aadharurl = await ref3.getDownloadURL();
+
+        final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: email,
+            password: password);
+        postDetailsToFirestore();
       }
 
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      postDetailsToFirestore();
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
+      if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: 'The account already exists for that email.');
         print('The account already exists for that email.');
       }

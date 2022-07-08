@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
@@ -641,7 +642,7 @@ class _Registration_Student extends State<Registration_Student> {
     final stepper = CoolStepper(
       showErrorSnackbar: false,
       onCompleted: () {
-        Fluttertoast.showToast(msg: 'Registered successfully');
+        //Fluttertoast.showToast(msg: 'Registered successfully');
         signUp(_email.text, _password.text);
         print('Steps completed!');
 
@@ -654,12 +655,14 @@ class _Registration_Student extends State<Registration_Student> {
 
     return ModalProgressHUD(
       inAsyncCall: _isLoading,
+      opacity: 0.8,
+      color: Colors.black,
       child: Scaffold(
         body: Column(
           children: [
-            const SizedBox(
-              height: 50,
-            ),
+            // const SizedBox(
+            //   height: 50,
+            // ),
             const Text(
               "Student Registration",
               style: TextStyle(
@@ -668,13 +671,12 @@ class _Registration_Student extends State<Registration_Student> {
                 fontSize: 25,
               ),
             ),
-            const SizedBox(
-              height: 25,
-            ),
+            // const SizedBox(
+            //   height: 25,
+            // ),
             Expanded(child: stepper),
           ],
         ),
-
       ),
     );
   }
@@ -748,57 +750,48 @@ class _Registration_Student extends State<Registration_Student> {
           _isLoading = true;
         });
         dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
-        if(_photo == null){
-          Fluttertoast.showToast(msg: "Please upload Profile picture");
+        if(_photo == null || _signature ==null || _aadhar==null){
+          Fluttertoast.showToast(msg: "Please upload Documents");
         }
         else{
           final ref = FirebaseStorage.instance
               .ref()
               .child("StudentDocs")
-              .child(_aadharC.text + '_photo' + '.jpg');
+              .child('${_aadharC.text}_photo.jpg');
           await ref.putFile(_photo!);
           photourl = await ref.getDownloadURL();
-        }
-        if(_signature == null){
-          Fluttertoast.showToast(msg: "Please upload Signature");
-        }
-        else{
 
-          final ref = FirebaseStorage.instance
+          final ref1 = FirebaseStorage.instance
               .ref()
               .child("StudentDocs")
-              .child(_aadharC.text + '_sign' + '.jpg');
-          await ref.putFile(_signature!);
-          signurl = await ref.getDownloadURL();
-        }
-        if(_aadhar == null){
-          Fluttertoast.showToast(msg: "Please upload Aadhar photo");
-        }
-        else{
+              .child('${_aadharC.text}_sign.jpg');
+          await ref1.putFile(_signature!);
+          signurl = await ref1.getDownloadURL();
 
-          final ref = FirebaseStorage.instance
+          final ref3 = FirebaseStorage.instance
               .ref()
               .child("StudentDocs")
-              .child(_aadharC.text + '_aadhar' + '.jpg');
-          await ref.putFile(_aadhar!);
-          aadharurl = await ref.getDownloadURL();
+              .child('${_aadharC.text}_aadhar.jpg');
+          await ref3.putFile(_aadhar!);
+          aadharurl = await ref3.getDownloadURL();
+          final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: email,
+              password: password);
+          postDetailsToFirestore();
         }
 
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-        postDetailsToFirestore();
+
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      }
       if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: 'The account already exists for that email.');
-        print('The account already exists for that email.');
+        if (kDebugMode) {
+          print('The account already exists for that email.');
+        }
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     finally {
         setState(() {
@@ -838,7 +831,7 @@ class _Registration_Student extends State<Registration_Student> {
         .set(studentModel.toMap());
     Fluttertoast.showToast(msg: "Account created successfully!");
     //Navigator.pushNamed(this.context,'/d-home');
-    Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => StudentHome()), (route) => false);
+    Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => const StudentHome()), (route) => false);
     //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
   }
 
