@@ -12,7 +12,7 @@ import 'DonerProfile_Page.dart';
 import 'StudentHome_Page.dart';
 import 'StudentLogin.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());

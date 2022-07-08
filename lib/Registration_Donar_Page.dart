@@ -1,11 +1,18 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_stepper/cool_stepper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:siksha_anudan/Doner%20Home.dart';
+import 'package:siksha_anudan/model/Donor_model.dart';
 
 class Registration_Donor extends StatefulWidget {
   const Registration_Donor ({Key? key}) : super(key: key);
@@ -16,7 +23,7 @@ class Registration_Donor extends StatefulWidget {
 
 class _Registration_Donor extends State<Registration_Donor > {
   final _formKey = GlobalKey<FormState>();
-
+  final auth = FirebaseAuth.instance;
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _phonenum = TextEditingController();
@@ -27,12 +34,17 @@ class _Registration_Donor extends State<Registration_Donor > {
   String? _dayvalue = '';
   String? _monvalue = '';
   String? _yearvalue = '';
+  String? photourl = "";
+  String? signurl = "";
+  String? aadharurl = "";
+  String? dob;
   File? _photo;
   File? _signature;
   File? _aadhar;
+  bool _isLoading = false;
   Future getPhoto(ImageSource source) async{
     try {
-      final image = await ImagePicker().pickImage(source: source);
+      final image = await ImagePicker().pickImage(source: source, imageQuality: 70);
       if (image == null) return;
       //final imageTemporary = File(image.path);
       final imagePermanent = File(image.path);
@@ -114,6 +126,7 @@ class _Registration_Donor extends State<Registration_Donor > {
                   }
                 },
                 controller: _name,
+
               ),
               _buildTextField(
                 labelText: 'Email Address',
@@ -154,8 +167,8 @@ class _Registration_Donor extends State<Registration_Donor > {
                   if (value.length < 3) {
                     return "Cannot be shorter than 3 Character";
                   }
-                  if (value.length > 30) {
-                    return "Cannot be larger than 15 Character";
+                  if (value.length > 50) {
+                    return "Cannot be larger than 50 Character";
                   } else {
                     return null;
                   }
@@ -402,6 +415,8 @@ class _Registration_Donor extends State<Registration_Donor > {
     final stepper = CoolStepper(
       showErrorSnackbar: false,
       onCompleted: () {
+        Fluttertoast.showToast(msg: 'Registered successfully');
+        signUp(_email.text, _password.text);
         print('Steps completed!');
       },
       steps: steps,
@@ -410,25 +425,28 @@ class _Registration_Donor extends State<Registration_Donor > {
       ),
     );
 
-    return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          const Text(
-            "Donor Registration",
-            style: TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.w900,
-              fontSize: 25,
+    return ModalProgressHUD(
+      inAsyncCall: _isLoading,
+      child: Scaffold(
+        body: Column(
+          children: [
+            const SizedBox(
+              height: 50,
             ),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Expanded(child: stepper),
-        ],
+            const Text(
+              "Donor Registration",
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.w900,
+                fontSize: 25,
+              ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Expanded(child: stepper),
+          ],
+        ),
       ),
     );
   }
@@ -491,5 +509,98 @@ class _Registration_Donor extends State<Registration_Donor > {
       ),
 
     );
+  }
+
+  void signUp(String email, String password) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
+      if(_photo == null){
+        Fluttertoast.showToast(msg: "Please upload Profile picture");
+      }
+      else{
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("DonorDocs")
+            .child(_aadharC.text + '_photo' + '.jpg');
+        await ref.putFile(_photo!);
+        photourl = await ref.getDownloadURL();
+      }
+      if(_signature == null){
+        Fluttertoast.showToast(msg: "Please upload Signature");
+      }
+      else{
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("DonorDocs")
+            .child(_aadharC.text + '_sign' + '.jpg');
+        await ref.putFile(_signature!);
+        signurl = await ref.getDownloadURL();
+      }
+      if(_aadhar == null){
+        Fluttertoast.showToast(msg: "Please upload Aadhar photo");
+      }
+      else{
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("DonorDocs")
+            .child(_aadharC.text + '_aadhar' + '.jpg');
+        await ref.putFile(_aadhar!);
+        aadharurl = await ref.getDownloadURL();
+      }
+
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      postDetailsToFirestore();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(msg: 'The account already exists for that email.');
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+    finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+    postDetailsToFirestore() async{
+      //calling our firestore
+      //calling our model
+      //sending these values
+      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+      User? user = auth.currentUser;
+      DonorModel donorModel = DonorModel();
+
+      donorModel.email = user!.email;
+      donorModel.uid = user.uid;
+      donorModel.name = _name.text;
+      donorModel.phonenum = _phonenum.text;
+      donorModel.address = _address.text;
+      donorModel.aadharC = _aadharC.text;
+      donorModel.pancard = _pancard.text;
+      donorModel.photourl = photourl;
+      donorModel.signurl = signurl;
+      donorModel.aadharurl = aadharurl;
+      donorModel.dob = dob;
+
+      await firebaseFirestore
+          .collection("Donor")
+          .doc(user.uid)
+          .set(donorModel.toMap());
+      Fluttertoast.showToast(msg: "Account created successfully!");
+      //Navigator.pushNamed(this.context,'/d-home');
+      Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+      //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
   }
 }
