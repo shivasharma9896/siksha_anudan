@@ -3,7 +3,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 class DonerViewStudent_Page  extends StatefulWidget {
 
   const DonerViewStudent_Page ({Key? key}) : super(key: key);
@@ -31,7 +31,52 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
   String colPercentage="70%";
   int tAmount=100000;
   int rAmount=50000;
+  late Razorpay razorpay;
+  TextEditingController textEditingController=TextEditingController();
   @override
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    razorpay =new Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerErrorFailure);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
+  }
+  void dispose(){
+
+    super.dispose();
+    razorpay.clear();
+  }
+  void openCheckout(){
+    var options={
+      "key":"rzp_test_yFfqxNtxEQubn7",
+      "amount":num.parse(textEditingController.text)*100,
+      "name":"Shiksha Anudaan",
+      "description":"Donation for the Student Education",
+      "prefill":{
+        "contact":"8853330207",
+        "email":"rishi.shukla@gmail.com"
+      },
+      "external":{
+        "wallet":["paytm"]
+      }
+    };
+    try{
+      razorpay.open(options);
+    }catch(e){
+      print(e.toString());
+    }
+  }
+  void handlerPaymentSuccess(){
+    print("Payment Success");
+  }
+  void handlerErrorFailure(){
+    print("Payment Failure");
+  }
+  void handlerExternalWallet(){
+    print("External Wallet");
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -139,7 +184,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Percenetage : ",style: bigTextGreenHeading,),
+                    const Text("Percentage : ",style: bigTextGreenHeading,),
                     Text(sscPercentage,style: mainBlackHeading,),
                   ],
                 ),
@@ -181,7 +226,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Percenetage : ",style: bigTextGreenHeading,),
+                    const Text("Percentage : ",style: bigTextGreenHeading,),
                     Text(sscPercentage,style: mainBlackHeading,),
                   ],
                 ),
@@ -222,7 +267,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Percenetage : ",style: bigTextGreenHeading,),
+                    const Text("Percentage : ",style: bigTextGreenHeading,),
                     Text(colPercentage,style: mainBlackHeading,),
                   ],
                 ),
@@ -314,7 +359,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
           const SizedBox(height: 24),
           Center(
             child:ElevatedButton(onPressed: (){
-
+              opendialog();
             },
 
               style: ElevatedButton.styleFrom(
@@ -339,6 +384,27 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
       ),
     );
   }
+  Future opendialog()=> showDialog(
+    context:context,
+    builder:(context)=> AlertDialog(
+      title:Center(child: Text('Donate')),
+      content:
+        TextFormField(
+        controller: textEditingController,
+        decoration: const InputDecoration(hintText: 'Enter Amount'),
+          keyboardType: TextInputType.number,
+      ),
+      actions: [
+        TextButton(
+          child: Text('Pay'),
+          onPressed: () {
+            openCheckout();
+          },
+        ),
+      ],
+    ),
+  );
+
 }
 
 
