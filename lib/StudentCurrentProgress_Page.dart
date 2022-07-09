@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+
+import 'model/Student_model.dart';
 
 class StudentCurrentPage extends StatefulWidget {
   const StudentCurrentPage({Key? key}) : super(key: key);
@@ -10,12 +13,45 @@ class StudentCurrentPage extends StatefulWidget {
 }
 
 class _StudentCurrentPageState extends State<StudentCurrentPage> {
-  int amountRaised=50000;
-  int aidAmount=100000;
-  String degree="MCA";
-  String name="Kendal Jenner";
+  final _auth = FirebaseAuth.instance;
+  late User loggedUser;
+  List studentProfile=[];
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    fetchStudent();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => (context));
+  }
+  Future<List> fetchStudent()async{
+    dynamic resultant=await StudentModel().getStudent(loggedUser.email.toString());
+    if(resultant==null){
+      print("unable to retrieve");
+    }
+    else{
+      setState((){
+        studentProfile=resultant;
+      });
+    }
+    return studentProfile;
+  }
+
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser!;
+      loggedUser = user;
+      print("user email");
+      print(loggedUser.email);
+    }
+    catch (e) {
+      print(e);
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    double percent=(studentProfile[0]['amountRec']/studentProfile[0]['amountReq'] *100) ;
+    int per=percent.round();
     return Scaffold(
      body: ListView(
          padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -26,19 +62,19 @@ class _StudentCurrentPageState extends State<StudentCurrentPage> {
 
                children: [
                  const SizedBox(height: 100),
-                 Text("Hola!  $name ",style: bigTextGreenHeading),
+                 Text("Hola! "+studentProfile[0]['name'],style: bigTextGreenHeading),
                  const SizedBox(height: 50),
-                 const CircleAvatar(
+                  CircleAvatar(
                    minRadius: 60,
                    maxRadius: 70,
-                   backgroundImage: AssetImage('assets/images/profile.jpg'),
+                   backgroundImage: NetworkImage(studentProfile[0]['photourl'].toString()),
                  ),
                  const SizedBox(height: 50),
                  Row(
                    mainAxisAlignment: MainAxisAlignment.center,
                    children: [
                      const Text("Degree : ",style: bigTextGreenHeading),
-                     Text(degree,style: const TextStyle(
+                     Text(studentProfile[0]['appFor'],style: const TextStyle(
                        color: Colors.lightBlueAccent,
                        fontWeight: FontWeight.w700,
                        fontSize: 30
@@ -48,7 +84,7 @@ class _StudentCurrentPageState extends State<StudentCurrentPage> {
                  const SizedBox(height: 40,),
                  const Text("Amount Raised",style: bigTextGreenHeading),
                  const SizedBox(height: 20,),
-                 Text("$amountRaised",style: textLimeheading,),
+                 Text(studentProfile[0]['amountRec'].toString(),style: textLimeheading,),
                ],
              ),
            ),
@@ -56,9 +92,9 @@ class _StudentCurrentPageState extends State<StudentCurrentPage> {
            LinearPercentIndicator(
              width: 320,
              lineHeight: 40,
-             center: const Text('50%'),
+             center:  Text("$per%"),
              progressColor: Colors.lightGreen,
-             percent: .5,
+             percent: per/100,
              barRadius: const Radius.elliptical(30, 30),
              animation: true,
              animationDuration: 5000,
@@ -69,7 +105,7 @@ class _StudentCurrentPageState extends State<StudentCurrentPage> {
                children: [
                  const Text("Total Aid Amount",style: bigTextGreenHeading),
                  const SizedBox(height: 20),
-                 Text("$aidAmount",style: textLimeheading,),
+                 Text(studentProfile[0]['amountReq'].toString(),style: textLimeheading,),
                ],
              ),
            ),

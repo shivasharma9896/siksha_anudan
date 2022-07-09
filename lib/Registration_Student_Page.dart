@@ -126,7 +126,7 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value.length < 3) {
                     return "Cannot be shorter than 3 Character";
                   }
-                  if (value.length > 15) {
+                  if (value.length > 30) {
                     return "Cannot be larger than 15 Character";
                   } else {
                     return null;
@@ -182,7 +182,7 @@ class _Registration_Student extends State<Registration_Student> {
                     return "Cannot be shorter than 3 Character";
                   }
                   if (value.length > 30) {
-                    return "Cannot be larger than 15 Character";
+                    return "Cannot be larger than 30 Character";
                   } else {
                     return null;
                   }
@@ -198,7 +198,7 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value.length < 11) {
                     return "Too Short";
                   }
-                  if (value.length > 11) {
+                  if (value.length > 12) {
                     return "Too long";
                   } else {
                     return null;
@@ -279,10 +279,7 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value!.isEmpty) {
                     return 'Required';
                   }
-                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
-                      .hasMatch(value!)) {
-                    return "Invalid Amount";
-                  } else {
+                   else {
                     return null;
                   }
                 },
@@ -866,24 +863,12 @@ class _Registration_Student extends State<Registration_Student> {
     //sending these values
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = auth.currentUser;
-    StudentModel studentModel = StudentModel();
+    StudentModel studentModel = StudentModel(amountReq: int.parse(amountreq.text),amountRec: 0,email: user!.email,uid: user.uid,
+    name:_name.text,phonenum: _phonenum.text,address: _address.text,aadharC: _aadharC.text,aadharurl:  aadharurl,appFor: degappfor.text,
+    highschoolboard: highschoolboard.text,highschoolcollegename: highschoolcollegename.text,highschoolpercent:  highschoolpercent.text,
+        intermediatecollegename: intermediatecollegename.text,intermediateboard: intermediateboard.text,intermediatepercent: intermediatepercent.text,
+      photourl: photourl,signurl:signurl,dob:  dob,status: "pending");
 
-    studentModel.email = user!.email;
-    studentModel.uid = user.uid;
-    studentModel.name = _name.text;
-    studentModel.phonenum = _phonenum.text;
-    studentModel.address = _address.text;
-    studentModel.aadharC = _aadharC.text;
-    studentModel.highschoolcollegename = highschoolcollegename.text;
-    studentModel.highschoolboard = highschoolboard.text;
-    studentModel.highschoolpercent = highschoolpercent.text;
-    studentModel.intermediatecollegename = intermediatecollegename.text;
-    studentModel.intermediateboard = intermediateboard.text;
-    studentModel.intermediatepercent = intermediatepercent.text;
-    studentModel.photourl = photourl;
-    studentModel.signurl = signurl;
-    studentModel.aadharurl = aadharurl;
-    studentModel.dob = dob;
 
     await firebaseFirestore
         .collection("Student")
@@ -891,7 +876,7 @@ class _Registration_Student extends State<Registration_Student> {
         .set(studentModel.toMap());
     Fluttertoast.showToast(msg: "Account created successfully!");
     //Navigator.pushNamed(this.context,'/d-home');
-    Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => StudentHome()), (route) => false);
+    Navigator.push(this.context, MaterialPageRoute(builder: (context) => StudentHome()));
     //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
   }
 

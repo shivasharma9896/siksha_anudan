@@ -204,7 +204,7 @@ class _Registration_Donor extends State<Registration_Donor > {
                   if (value.length < 9) {
                     return "Too Short";
                   }
-                  if (value.length > 9) {
+                  if (value.length > 10) {
                     return "Too long";
                   } else {
                     return null;
@@ -620,7 +620,7 @@ class _Registration_Donor extends State<Registration_Donor > {
           .set(donorModel.toMap());
       Fluttertoast.showToast(msg: "Account created successfully!");
       //Navigator.pushNamed(this.context,'/d-home');
-      Navigator.pushAndRemoveUntil(this.context, MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+      Navigator.push(this.context, MaterialPageRoute(builder: (context) => DonerHome()));
       //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
   }
 }

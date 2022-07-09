@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:siksha_anudan/DonerProfile_Page.dart';
 import 'package:siksha_anudan/StudentCurrentProgress_Page.dart';
 import 'package:line_icons/line_icons.dart';
+
+import 'StudentProfile_Page.dart';
 
 class StudentHome extends StatefulWidget {
   const StudentHome({Key? key}) : super(key: key);
@@ -13,9 +14,8 @@ class StudentHome extends StatefulWidget {
 class _StudentHomeState extends State<StudentHome> {
   int currentIndex=0;
   final screens=[
-    const StudentCurrentPage(),
-
-    const DonerProfile_Page(),
+     StudentCurrentPage(),
+     StudentProfile_Page(),
   ];
   @override
   Widget build(BuildContext context) {
