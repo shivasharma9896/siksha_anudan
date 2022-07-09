@@ -139,7 +139,7 @@ class _Registration_Donor extends State<Registration_Donor > {
                 },
                 controller: _email,
               ),
-              _buildTextField(
+              _buildNumberField(
                 //keyboardType:TextInputType.phone,
                 labelText: 'Phone Number',
                 validator: (value) {
@@ -175,18 +175,18 @@ class _Registration_Donor extends State<Registration_Donor > {
                 },
                 controller: _address,
               ),
-              _buildTextField(
+              _buildNumberField(
                 //keyboardType:TextInputType.phone,
                 labelText: 'Enter Aadhar Number',
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Aadhar is required';
                   }
-                  if (value.length < 11) {
-                    return "Too Short";
+                  if (value.length < 12) {
+                    return "Short";
                   }
-                  if (value.length > 11) {
-                    return "Too long";
+                  if (value.length > 12) {
+                    return "Long";
                   } else {
                     return null;
                   }
@@ -213,25 +213,7 @@ class _Registration_Donor extends State<Registration_Donor > {
                 //obscureText : true,
                 controller: _pancard,
               ),
-              _buildTextField(
-                //keyboardType:TextInputType.phone,
-                labelText: 'Enter Password',
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Password is required';
-                  }
-                  if (value.length < 3) {
-                    return "Too Short";
-                  }
-                  if (value.length > 15) {
-                    return "Too long";
-                  } else {
-                    return null;
-                  }
-                },
-                //obscureText : true,
-                controller: _password,
-              ),
+
               const SizedBox(
                 height: 5,
               ),
@@ -274,6 +256,29 @@ class _Registration_Donor extends State<Registration_Donor > {
                   _yearvalue = value,
                   print('onChangedYear: $value'),
                 },
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+
+              _buildTextField(
+
+                labelText: 'Enter Password',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Password is required';
+                  }
+                  if (value.length < 3) {
+                    return "Too Short";
+                  }
+                  if (value.length > 15) {
+                    return "Too long";
+                  } else {
+                    return null;
+                  }
+                },
+                //obscureText : true,
+                controller: _password,
               ),
             ],
           ),
@@ -373,7 +378,6 @@ class _Registration_Donor extends State<Registration_Donor > {
                 //a: 135,
                 a:100,
               ),
-
               apperance(
                 title:'Phone Number',
                 value:_phonenum.text,
@@ -467,7 +471,23 @@ class _Registration_Donor extends State<Registration_Donor > {
       ),
     );
   }
-
+  Widget _buildNumberField({
+    String? labelText,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: labelText,
+        ),
+        keyboardType: TextInputType.number,
+        validator: validator,
+        controller: controller,
+      ),
+    );
+  }
 
   Widget CustomButton({
     required String title,

@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +37,8 @@ class _Registration_Student extends State<Registration_Student> {
   final TextEditingController intermediatecollegename = TextEditingController();
   final TextEditingController intermediateboard = TextEditingController();
   final TextEditingController intermediatepercent = TextEditingController();
+  final TextEditingController degappfor=TextEditingController();
+  final TextEditingController amountreq=TextEditingController();
 
   String? _dayvalue = '';
   String? _monvalue = '';
@@ -148,7 +150,7 @@ class _Registration_Student extends State<Registration_Student> {
                 },
                 controller: _email,
               ),
-              _buildTextField(
+              _buildNumberField(
                 //keyboardType:TextInputType.phone,
                 labelText: 'Phone Number',
                 validator: (value) {
@@ -158,10 +160,7 @@ class _Registration_Student extends State<Registration_Student> {
                   if (value.length != 10) {
                     return "Please enter valid phone number";
                   }
-                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
-                      .hasMatch(value!)) {
-                    return "Invalid Phone Number";
-                  } else {
+                  else {
                     return null;
                   }
                 },
@@ -190,8 +189,7 @@ class _Registration_Student extends State<Registration_Student> {
                 },
                 controller: _address,
               ),
-              _buildTextField(
-                //keyboardType:TextInputType.phone,
+              _buildNumberField(
                 labelText: 'Enter Aadhar Number',
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -208,25 +206,6 @@ class _Registration_Student extends State<Registration_Student> {
                 },
                 //obscureText : true,
                 controller: _aadharC,
-              ),
-              _buildTextField(
-                //keyboardType:TextInputType.phone,
-                labelText: 'Enter Password',
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Password is required';
-                  }
-                  if (value.length < 3) {
-                    return "Too Short";
-                  }
-                  if (value.length > 15) {
-                    return "Too long";
-                  } else {
-                    return null;
-                  }
-                },
-                //obscureText : true,
-                controller: _password,
               ),
               const SizedBox(
                 height: 12,
@@ -270,6 +249,63 @@ class _Registration_Student extends State<Registration_Student> {
                   _yearvalue = value,
                   print('onChangedYear: $value'),
                 },
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: CustomDropdown(
+                  // fillColor: Colors.alabaster,
+                  borderRadius: BorderRadius.circular(5),
+                  hintText: 'Degree Applied For',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[500],
+                  ),
+                  items: const ['B.A','B.Arch','B.C.A','B.Com', 'B.Sc','B.Tech','M.B.A','M.C.A','M.Tech'],
+                  controller: degappfor,
+                ),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              _buildNumberField(
+                //keyboardType:TextInputType.phone,
+                labelText: 'Amount required for Donation',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Required';
+                  }
+                  if (!RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                      .hasMatch(value!)) {
+                    return "Invalid Amount";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: amountreq,
+              ),
+              _buildTextField(
+                //keyboardType:TextInputType.phone,
+                labelText: 'Enter Password',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Password is required';
+                  }
+                  if (value.length < 3) {
+                    return "Too Short";
+                  }
+                  if (value.length > 15) {
+                    return "Too long";
+                  } else {
+                    return null;
+                  }
+                },
+                //obscureText : true,
+                controller: _password,
               ),
             ],
           ),
@@ -690,6 +726,23 @@ class _Registration_Student extends State<Registration_Student> {
         decoration: InputDecoration(
           labelText: labelText,
         ),
+        validator: validator,
+        controller: controller,
+      ),
+    );
+  }
+  Widget _buildNumberField({
+    String? labelText,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: labelText,
+        ),
+        keyboardType: TextInputType.number,
         validator: validator,
         controller: controller,
       ),
