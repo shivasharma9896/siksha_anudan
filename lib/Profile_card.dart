@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:siksha_anudan/Doner_ViewStudent_Page.dart';
 import 'constants.dart';
 class Search_Profile_Card extends StatefulWidget {
-  const Search_Profile_Card({Key? key}) : super(key: key);
-
+  const Search_Profile_Card( {Key? key, required this.studentProfileList}) : super(key: key);
+  final Map<String,dynamic>studentProfileList;
   @override
   State<Search_Profile_Card> createState() => _Search_Profile_CardState();
 }
@@ -11,9 +12,11 @@ class Search_Profile_Card extends StatefulWidget {
 class _Search_Profile_CardState extends State<Search_Profile_Card> {
   @override
   Widget build(BuildContext context) {
+    double percent=(widget.studentProfileList['amountRec']/widget.studentProfileList['amountReq'] *100) ;
+    int per=percent.round();
     return GestureDetector(
       onTap: (){
-        Navigator.pushNamed(context, '/student-profile');
+        Navigator.push(this.context, MaterialPageRoute(builder: (context) => DonerViewStudent_Page(studentProfile: widget.studentProfileList,)));
       },
       child: Container(
         margin: const EdgeInsets.all(15),
@@ -29,18 +32,18 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
                 children:  [
                   Column(
                     children: [
-                      const CircleAvatar(
+                       CircleAvatar(
                         minRadius: 30,
                         maxRadius: 40,
-                        backgroundImage: AssetImage('assets/images/profile.jpg'),
+                        backgroundImage: NetworkImage(widget.studentProfileList['photourl'].toString()),
                       ),
                       const SizedBox(height: 10,),
                       LinearPercentIndicator(
                         width: 100,
                         lineHeight: 20,
-                        center: const Text('50%'),
+                        center: Text ("$per%"),
                         progressColor: Colors.lightGreen,
-                        percent: .5,
+                        percent:per/100,
                         barRadius: const Radius.elliptical(10, 10),
                         animation: true,
                         animationDuration: 5000,
@@ -50,24 +53,24 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
                   const SizedBox(width: 70,),
                   Column(
                     children: [
-                      const Text("Kendal Jenner",style:mainBlackHeading),
+                       Text(widget.studentProfileList['name'],style:mainBlackHeading),
                       const SizedBox(height: 15,),
                       Row(
-                        children: const [
-                          Text("Qualification : ",style:smallBlackHeading),
-                          Text("BCA"),
-                        ],
-                      ),
-                      Row(
-                        children: const [
+                        children:  [
                           Text("Applied For : ",style: smallBlackHeading),
-                          Text("BCA"),
+                          Text(widget.studentProfileList['appFor']),
                         ],
                       ),
                       Row(
-                        children: const [
+                        children:  [
                           Text("Aid Amount : ", style: smallBlackHeading),
-                          Text("Rs. 1,00,0000"),
+                          Text(widget.studentProfileList['amountReq'].toString()),
+                        ],
+                      ),
+                      Row(
+                        children:  [
+                          Text("Aid Received : ", style: smallBlackHeading),
+                          Text(widget.studentProfileList['amountRec'].toString()),
                         ],
                       )
                     ],

@@ -1,40 +1,65 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'History_Student_Card.dart';
-void main() {
-  runApp(const History_Page());
+import 'package:siksha_anudan/History_Student_Card.dart';
+
+import 'model/transaction.dart';
+
+class HistoryPage extends StatefulWidget {
+
+  HistoryPage({Key? key}) : super(key: key);
+
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class History_Page extends StatelessWidget {
-  const History_Page({Key? key}) : super(key: key);
+class _HistoryPageState extends State<HistoryPage> {
+  final _auth=FirebaseAuth.instance;
+  late User loggedUser;
+  List translist=[];
+  void getCurrentUser()async{
+    try{
+      final user=_auth.currentUser!;
+      loggedUser=user;
+      print("user email history");
+      print(loggedUser.email);
+    }
+    catch(e){
+      print(e);
+    }
+  }
 
-  // This widget is the root of your application.
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    fetchtransList();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => (context));
+  }
+  Future<List> fetchtransList()async{
+    dynamic resultant=await transaction().gettransList(loggedUser.email.toString());
+    if(resultant==null){
+      print("unable to retrieve");
+    }
+    else{
+      setState((){
+        translist=resultant;
+      });
+    }
+    return translist;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    bool isRunning = true;
     return Scaffold(
-
-      body: SingleChildScrollView(
-        child: Column(
-            children: [
-              Container(
-                width: 400.0,
-                height: 60.0,
-                decoration: const BoxDecoration(
-                  color: Colors.lime,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10)),
-                ),
-              ),
-              const History_Profile_Card(),
-              const History_Profile_Card(),
-              const History_Profile_Card(),
-              const History_Profile_Card(),
-              const History_Profile_Card(),
-              const History_Profile_Card()
-
-            ]
-        ),
-      ),
-    );
+        backgroundColor: Colors.white,
+        body:  Container(
+            child: ListView.builder(itemCount: translist.length,itemBuilder: (context,index){
+              return History_Profile_Card(transdetail: translist[index],);
+            })));
   }
 }
+

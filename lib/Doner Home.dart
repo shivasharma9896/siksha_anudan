@@ -14,9 +14,9 @@ class DonerHome extends StatefulWidget {
 class _DonerHomeState extends State<DonerHome> {
   int currentIndex=0;
   final screens=[
-    const SearchStudent_Page(),
-    const History_Page(),
-    const DonerProfile_Page(),
+     SearchStudent_Page(),
+     HistoryPage(),
+     DonerProfile_Page(),
   ];
   @override
   Widget build(BuildContext context) {

@@ -58,7 +58,7 @@ class StudentModel{
   Future getStudentList()async{
     List studentlist=[];
     try{
-      await profilelist.where('status',isEqualTo: "pending").get().then((querySnapshot){
+      await profilelist.where('status',isEqualTo: "approved").get().then((querySnapshot){
         querySnapshot.docs.forEach((element){
           studentlist.add(element.data());
           //print(element.data);
@@ -74,10 +74,9 @@ class StudentModel{
   Future getStudent(String em)async{
     List student=[];
     try{
-      await profilelist.where('status',isEqualTo: "pending").get().then((querySnapshot){
+      await profilelist.where('email',isEqualTo: em).get().then((querySnapshot){
         querySnapshot.docs.forEach((element){
           student.add(element.data());
-          //print(element.data);
         });
       });
       return student;

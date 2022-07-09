@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         '/d-home': (context) =>  const DonerHome(),
         '/s-home':(context) =>  const StudentHome(),
         '/forgot-pass': (context) =>  const ForgetPass_Page(),
-        '/student-profile': (context) =>  const DonerViewStudent_Page(),
+        //'/student-profile': (context) =>  const DonerViewStudent_Page(),
       },
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );

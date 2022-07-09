@@ -7,6 +7,7 @@ import 'package:siksha_anudan/Profile_card.dart';
 import 'package:paginated_search_bar/paginated_search_bar.dart';
 import 'package:endless/endless.dart';
 import 'ComboBoxSearchStudentFilter.dart';
+import 'model/Student_model.dart';
 
 
 final List<SelectedListItem> _listOfCities = [
@@ -76,15 +77,27 @@ class SearchStudent_Page extends StatefulWidget {
 class _SearchStudent_Page extends State<SearchStudent_Page> {
   final _auth=FirebaseAuth.instance;
   late User loggedUser;
-
+  List studentProfileList=[];
   @override
-  void initState(){
+  void initState() {
     super.initState();
     getCurrentUser();
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => (context));
+    fetchStudentList();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => (context));
+  }
+  Future<List> fetchStudentList()async{
+    dynamic resultant=await StudentModel().getStudentList();
+    if(resultant==null){
+      print("unable to retrieve");
     }
-
+    else{
+      setState((){
+        studentProfileList=resultant;
+      });
+    }
+    return studentProfileList;
+  }
 
   void getCurrentUser()async{
     try{
@@ -99,36 +112,13 @@ class _SearchStudent_Page extends State<SearchStudent_Page> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body:  SingleChildScrollView(
-        child: Column(
-            children: [
-              const SizedBox(height: 20),
-              const MyHomePage(),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 110,
-                    child: DropDownListExample(kHint: "City",dropdownl: _listOfCities),
-                  ),
-                  SizedBox(
-                    width: 130,
-                    child: DropDownListExample(kHint:"Income",dropdownl: _incomelist),
-                  ),
-                  SizedBox(
-                    width: 130,
-                    child: DropDownListExample(kHint:"Amount",dropdownl: _amountOfAid),
-                  ),
-                ],
-              ),
-              const Search_Profile_Card(),
-              const Search_Profile_Card(),
-              const Search_Profile_Card(),
-              const Search_Profile_Card(),
-            ]
-        ),
-      ),
+      body:  Container(
+          child: ListView.builder(itemCount: studentProfileList.length,itemBuilder: (context,index){
+            return Search_Profile_Card(studentProfileList: studentProfileList[index],);
+          }))
     );
   }
 }

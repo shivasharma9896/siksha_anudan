@@ -25,11 +25,11 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
   void initState() {
     super.initState();
     getCurrentUser();
-    fetchStudent();
+    fetchDoner();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => (context));
   }
-  Future<List> fetchStudent()async{
+  Future<List> fetchDoner()async{
     dynamic resultant=await DonorModel().getDoner(loggedUser.email.toString());
     if(resultant==null){
       print("unable to retrieve");
@@ -46,7 +46,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
     try {
       final user = _auth.currentUser!;
       loggedUser = user;
-      print("user email");
+      print("user email profile");
       print(loggedUser.email);
     }
     catch (e) {
