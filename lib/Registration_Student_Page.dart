@@ -31,6 +31,7 @@ class _Registration_Student extends State<Registration_Student> {
   final TextEditingController _address = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _aadharC = TextEditingController();
+  final TextEditingController _pan=TextEditingController();
   final TextEditingController highschoolcollegename = TextEditingController();
   final TextEditingController highschoolboard = TextEditingController();
   final TextEditingController highschoolpercent = TextEditingController();
@@ -209,6 +210,29 @@ class _Registration_Student extends State<Registration_Student> {
               ),
               const SizedBox(
                 height: 12,
+              ),
+              _buildTextField(
+                //keyboardType:TextInputType.phone,
+                labelText: 'PAN Number',
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'PAN Number is required';
+                  }
+                  if (!RegExp(r'[a-zA-Z\-0-9]+$').hasMatch(value!) &&
+                      !RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
+                          .hasMatch(value!)) {
+                    return "Invalid Address";
+                  }
+                  if (value.length < 3) {
+                    return "Cannot be shorter than 3 Character";
+                  }
+                  if (value.length > 10) {
+                    return "Cannot be larger than 15 Character";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: _pan,
               ),
               Container(
                 color: Colors.white,

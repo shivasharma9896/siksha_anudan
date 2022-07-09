@@ -1,9 +1,14 @@
 import 'dart:core';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:siksha_anudan/Doner%20Home.dart';
+import 'StudentHome_Page.dart';
 import 'constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:siksha_anudan/model/transaction.dart';
 class DonerViewStudent_Page  extends StatefulWidget {
 
   const DonerViewStudent_Page ({Key? key}) : super(key: key);
@@ -14,6 +19,7 @@ class DonerViewStudent_Page  extends StatefulWidget {
 
 class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
   final _auth=FirebaseAuth.instance;
+
   String name="Kendal Jenner";
   String dob="12/10/1989";
   String age="23";
@@ -38,7 +44,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    razorpay =new Razorpay();
+    razorpay = Razorpay();
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerErrorFailure);
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
@@ -68,8 +74,12 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
       print(e.toString());
     }
   }
-  void handlerPaymentSuccess(){
-    print("Payment Success");
+  void handlerPaymentSuccess(PaymentSuccessResponse response){
+    print("Payment Success:$response");
+    postDetailsToFirestore(response);
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId!,
+        toastLength: Toast.LENGTH_SHORT);
   }
   void handlerErrorFailure(){
     print("Payment Failure");
@@ -404,6 +414,29 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
       ],
     ),
   );
+  postDetailsToFirestore(PaymentSuccessResponse response) async{
+    //calling our firestore
+    //calling our model
+    //sending these values
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+    transaction tr = transaction(
+      donoremail: 'rishi.shukla2021@gmail.com',
+      studemail: 'stu.email@gmail.com',
+      donatedamt: '2000',
+      tranid: response.paymentId,
+      sname: 'rishi',
+      dname: 'gag'
+    );
+    await firebaseFirestore
+        .collection("Student")
+        .doc(tr.tranid)
+        .set(tr.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully!");
+    //Navigator.pushNamed(this.context,'/d-home');
+    Navigator.push(this.context, MaterialPageRoute(builder: (context) => DonerHome()));
+    //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+  }
 
 }
 
