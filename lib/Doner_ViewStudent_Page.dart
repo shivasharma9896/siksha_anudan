@@ -2,7 +2,6 @@ import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:siksha_anudan/Doner%20Home.dart';
 import 'constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -428,17 +427,15 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
         .collection("transaction")
         .doc(tr.tranid)
         .set(tr.toMap());
-    Fluttertoast.showToast(msg: "Account created successfully!");
+
     var db = FirebaseFirestore.instance;
     db.collection("Student").doc(widget.studentProfile['uid']).update({'amountRec':widget.studentProfile['amountRec']+int.parse(textEditingController.text)
     });
-    Navigator.pop(context);
     setState((){
-
+      widget.studentProfile['amountRec']+=int.parse(textEditingController.text);
     });
-    //Navigator.pushNamed(this.context,'/d-home');
-    // Navigator.push(this.context, MaterialPageRoute(builder: (context) => DonerHome()));
-    //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+    Navigator.pop(context);
+
   }
 
 }

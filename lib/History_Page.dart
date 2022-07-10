@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:siksha_anudan/History_Student_Card.dart';
@@ -16,7 +17,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   final _auth=FirebaseAuth.instance;
   late User loggedUser;
-  List translist=[];
+  FirebaseFirestore _firestore=FirebaseFirestore.instance;
   void getCurrentUser()async{
     try{
       final user=_auth.currentUser!;
@@ -33,33 +34,36 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
     getCurrentUser();
-    fetchtransList();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => (context));
   }
-  Future<List> fetchtransList()async{
-    dynamic resultant=await transaction().gettransList(loggedUser.email.toString());
-    if(resultant==null){
-      print("unable to retrieve");
-    }
-    else{
-      setState((){
-        translist=resultant;
-      });
-    }
-    return translist;
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body:  Container(
-            child: ListView.builder(itemCount: translist.length,itemBuilder: (context,index){
-              return History_Profile_Card(transdetail: translist[index],);
-            })));
+        body:  StreamBuilder(
+          stream: _firestore.collection("transaction").where('DonorEmail',isEqualTo: loggedUser.email.toString()).snapshots(),
+          builder:  (context, snapshot){
+            if(!snapshot.hasData){
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.lightBlueAccent,
+                ),
+              );
+            }
+            final messages=snapshot.data!.docs;
+            List<History_Profile_Card> translist=[];
+            for (var message in messages){
+              Map<String,dynamic> trans=message.data();
+              translist.add(History_Profile_Card(transdetail: trans));
+            }
+            return ListView(
+              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
+              children: translist,
+            );
+          },
+        ));
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:siksha_anudan/Doner_ViewStudent_Page.dart';
 import 'package:siksha_anudan/Home_Page.dart';
 import 'package:siksha_anudan/Login_Page.dart';
 import 'package:siksha_anudan/Registration_Donar_Page.dart';
+import 'package:siksha_anudan/Search_Student_Page.dart';
 import 'Login_Page.dart';
 import 'ForgetPassword.dart';
 import 'Registration_Student_Page.dart';
