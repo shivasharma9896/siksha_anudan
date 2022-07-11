@@ -23,11 +23,11 @@ class StudentModel{
   int? amountReq;
   int? amountRec;
   String? status;
-
+  String? income;
 
   StudentModel({this.uid, this.name, this.email, this.phonenum, this.address, this.aadharC, this.highschoolcollegename,
     this.highschoolboard,this.highschoolpercent,this.intermediatecollegename, this.intermediateboard,
-    this.intermediatepercent, this.photourl, this.signurl, this.aadharurl, this.dob, this.amountReq,this.appFor,this.status, this.amountRec});
+    this.intermediatepercent, this.photourl, this.signurl, this.aadharurl, this.dob, this.amountReq,this.appFor,this.status, this.amountRec,this.income});
 
   //Reciving data from firebase
   factory StudentModel.fromMap(map){
@@ -52,7 +52,8 @@ class StudentModel{
         appFor: map['appFor'],
         amountReq: map['amountReq']
         , amountRec: map['amountRec'],
-        status: map['status']
+        status: map['status'],
+        income:map['income']
     );
   }
   Future getStudentList()async{
@@ -109,7 +110,8 @@ class StudentModel{
       'appFor':appFor,
       'amountRec':amountRec,
       'status':status,
-      'aadharC':aadharC
+      'aadharC':aadharC,
+      'income':income
     };
   }
 

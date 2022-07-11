@@ -40,6 +40,7 @@ class _Registration_Student extends State<Registration_Student> {
   final TextEditingController intermediatepercent = TextEditingController();
   final TextEditingController degappfor=TextEditingController();
   final TextEditingController amountreq=TextEditingController();
+  final TextEditingController income=TextEditingController();
 
   String? _dayvalue = '';
   String? _monvalue = '';
@@ -296,6 +297,20 @@ class _Registration_Student extends State<Registration_Student> {
               const SizedBox(
                 height: 12,
               ),
+              CustomDropdown(
+                // fillColor: Colors.alabaster,
+                borderRadius: BorderRadius.circular(5),
+                hintText: "Family Income",
+                hintStyle: TextStyle(
+                  color: Colors.grey[500],
+                ),
+                items: const ["Below 1,00,000",
+                  "1,00,000 - 3,00,000",
+                  "4,00,000 - 7,00,000",
+                  "7,00,000 - 10,00,000"],
+                controller: income,
+              ),
+              const SizedBox(height: 12,),
               _buildNumberField(
                 //keyboardType:TextInputType.phone,
                 labelText: 'Amount required for Donation',
@@ -532,7 +547,7 @@ class _Registration_Student extends State<Registration_Student> {
                     height: 40,
                   ),
                   CustomButton(
-                    title: 'Upload Signature',
+                    title: 'Upload Bonafide Certificate',
                     icon: Icons.image_outlined,
                     onClick: () => getSignature(ImageSource.gallery),
                   ),
@@ -547,7 +562,7 @@ class _Registration_Student extends State<Registration_Student> {
                     height: 40,
                   ),
                   CustomButton(
-                    title: 'Upload Aadhar',
+                    title: 'Upload SOP',
                     icon: Icons.image_outlined,
                     onClick: () => getsop(ImageSource.gallery),
                   ),
@@ -891,7 +906,7 @@ class _Registration_Student extends State<Registration_Student> {
     name:_name.text,phonenum: _phonenum.text,address: _address.text,aadharC: _aadharC.text,aadharurl:  aadharurl,appFor: degappfor.text,
     highschoolboard: highschoolboard.text,highschoolcollegename: highschoolcollegename.text,highschoolpercent:  highschoolpercent.text,
         intermediatecollegename: intermediatecollegename.text,intermediateboard: intermediateboard.text,intermediatepercent: intermediatepercent.text,
-      photourl: photourl,signurl:signurl,dob:  dob,status: "pending");
+      photourl: photourl,signurl:signurl,dob:  dob,status: "pending",income: income.text);
 
 
     await firebaseFirestore
