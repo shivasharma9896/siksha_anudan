@@ -46,8 +46,6 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
     try {
       final user = _auth.currentUser!;
       loggedUser = user;
-      print("user email profile");
-      print(loggedUser.email);
     }
     catch (e) {
       print(e);

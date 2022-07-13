@@ -4,8 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:siksha_anudan/History_Student_Card.dart';
 
-import 'model/transaction.dart';
-
 class HistoryPage extends StatefulWidget {
 
   HistoryPage({Key? key}) : super(key: key);
@@ -22,8 +20,6 @@ class _HistoryPageState extends State<HistoryPage> {
     try{
       final user=_auth.currentUser!;
       loggedUser=user;
-      print("user email history");
-      print(loggedUser.email);
     }
     catch(e){
       print(e);

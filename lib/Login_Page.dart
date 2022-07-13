@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:siksha_anudan/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'model/Donor_model.dart';
 
 class Login_Page extends StatefulWidget {
 
@@ -21,6 +22,20 @@ class _Login_PageState extends State<Login_Page> {
   bool showspinner=false;
   static const String logo = 'assets/images/siksha_logo.svg';
   bool isChecked=false;
+  List donerProfile=[];
+
+  Future<List> getDonor(String em)async{
+    dynamic resultant=await DonorModel().getDoner(em);
+    if(resultant==null){
+      print("unable to retrieve");
+    }
+    else{
+      setState((){
+        donerProfile=resultant;
+      });
+    }
+    return donerProfile;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +114,7 @@ class _Login_PageState extends State<Login_Page> {
                             });
                           },
                         ),
-                        hintText: 'Enter your Password',
+                        hintText: '            Enter your Password',
                         hintStyle:const TextStyle(color: Colors.green),
                         contentPadding: const EdgeInsets.all(15),
                         border: OutlineInputBorder(
@@ -133,8 +148,14 @@ class _Login_PageState extends State<Login_Page> {
 
                         try{
                           final user=await _auth.signInWithEmailAndPassword(email: email, password: password);
-                          if(user!=null){
-                            Navigator.pushNamed(context, '/d-home');
+                          if(user!=null ) {
+                            await getDonor(email);
+                            if(donerProfile.length==1){
+                              Navigator.pushNamed(context, '/d-home');
+                            }
+                            else{
+                              throw Exception("Login Failed");
+                            }
                           }
                         }
                         catch (error) {
@@ -150,15 +171,6 @@ class _Login_PageState extends State<Login_Page> {
                           showspinner=false;
                         });
 
-                        // try{
-                        //   final newUser=await _auth.createUserWithEmailAndPassword(email: email, password: password);
-                        //   if(newUser!=null){
-                            //Navigator.pushNamed(context, '/search');
-                        //   }
-                        // }
-                        // catch(e){
-                        //   print(e);
-                        // }
                       },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFFFE9EF),
@@ -209,7 +221,7 @@ class _Login_PageState extends State<Login_Page> {
                   color: Colors.lime,
                 ),
                 width: 400.0,
-                height: 80.0,
+                height: 25.0,
                 alignment: Alignment.center, // align your child's position.
               ),
             ],

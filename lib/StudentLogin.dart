@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:siksha_anudan/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:siksha_anudan/model/Student_model.dart';
 
 class SLogin_Page extends StatefulWidget {
 
@@ -21,6 +22,20 @@ class _SLogin_PageState extends State<SLogin_Page> {
   bool showspinner=false;
   static const String logo = 'assets/images/siksha_logo.svg';
   bool isChecked=false;
+  List studentProfile=[];
+
+  Future<List> getStudent(String em)async{
+    dynamic resultant=await StudentModel().getStudent(em);
+    if(resultant==null){
+      print("unable to retrieve");
+    }
+    else{
+      setState((){
+        studentProfile=resultant;
+      });
+    }
+    return studentProfile;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +114,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
                             });
                           },
                         ),
-                        hintText: 'Enter your Password',
+                        hintText: '            Enter your Password',
                         hintStyle:const TextStyle(color: Colors.green),
                         contentPadding: const EdgeInsets.all(15),
                         border: OutlineInputBorder(
@@ -133,8 +148,14 @@ class _SLogin_PageState extends State<SLogin_Page> {
 
                         try{
                           final user=await _auth.signInWithEmailAndPassword(email: email, password: password);
-                          if(user!=null){
-                            Navigator.pushNamed(context, '/s-home');
+                          if(user!=null ) {
+                            await getStudent(email);
+                            if(studentProfile.length==1){
+                              Navigator.pushNamed(context, '/s-home');
+                            }
+                            else{
+                              throw Exception("Login Failed");
+                            }
                           }
                         }
                         catch (error) {
@@ -149,16 +170,6 @@ class _SLogin_PageState extends State<SLogin_Page> {
                         setState((){
                           showspinner=false;
                         });
-
-                        // try{
-                        //   final newUser=await _auth.createUserWithEmailAndPassword(email: email, password: password);
-                        //   if(newUser!=null){
-                        //Navigator.pushNamed(context, '/search');
-                        //   }
-                        // }
-                        // catch(e){
-                        //   print(e);
-                        // }
                       },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFFFE9EF),
@@ -209,7 +220,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
                   color: Colors.lime,
                 ),
                 width: 400.0,
-                height: 80.0,
+                height: 25.0,
                 alignment: Alignment.center, // align your child's position.
               ),
             ],
@@ -247,7 +258,6 @@ class _CheckBState extends State<CheckB> {
     return Checkbox(
       checkColor: Colors.white,
       fillColor: MaterialStateProperty.resolveWith(getColor),
-
       value: isChecked,
       onChanged: (bool? value) {
         setState(() {

@@ -50,7 +50,7 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 70,),
+                  const SizedBox(width: 40,),
                   Column(
                     children: [
                        Text(widget.studentProfileList['name'],style:mainBlackHeading),
