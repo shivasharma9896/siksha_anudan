@@ -37,7 +37,7 @@ class Home_Page extends StatelessWidget{
       ),
       const Padding(
       padding: EdgeInsets.fromLTRB(100, 30, 100,20),
-      child: Text("We offer gifts, sweets and flowers for your loved ones, friends and business partners. Visit our catalog of floral arrangements delivery",
+      child: Text("We connects Students with the Donor, which helps them to raise fund to continue their studies.",
       style: TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.w500,
