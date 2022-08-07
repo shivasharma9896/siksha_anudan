@@ -38,6 +38,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
   }
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body:  ModalProgressHUD (
@@ -47,13 +48,12 @@ class _SLogin_PageState extends State<SLogin_Page> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20,
-              ),
+          SizedBox(height: size.height*0.02,),
               Center(
                 child: SvgPicture.asset(
                   logo,
-                  width: 350,
-                  height: 350,
+                  width: size.width*0.4,
+                  height: size.height*0.4,
                   semanticsLabel: 'Logo',
                 ),
               ),
@@ -62,7 +62,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(50),
+                padding:  EdgeInsets.all(size.width*0.1),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -131,7 +131,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
                       children:  [
                         const CheckB(),
                         const Text("Remember Me"),
-                        const SizedBox(width: 60,),
+                        SizedBox(width: size.width*0.11,),
                         GestureDetector(
                           onTap: (){
                             Navigator.pushNamed(context, '/forgot-pass');
@@ -188,6 +188,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
                         ),
                       ),
                     ),
+                    SizedBox(height: size.height*0.02,),
                     Center(
                       child:ElevatedButton(onPressed: () async{
 
@@ -219,8 +220,8 @@ class _SLogin_PageState extends State<SLogin_Page> {
                   borderRadius: BorderRadius.circular(10.0),
                   color: Colors.lime,
                 ),
-                width: 400.0,
-                height: 25.0,
+                width: size.width,
+                height: size.height*0.028,
                 alignment: Alignment.center, // align your child's position.
               ),
             ],

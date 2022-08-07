@@ -55,6 +55,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
   }
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     String phoneNumber=studentProfile[0]['phonenum'].toString();
     String address=studentProfile[0]['address'];
     return Scaffold(
@@ -63,27 +64,24 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
         padding: const EdgeInsets.symmetric(horizontal: 32),
         physics: const BouncingScrollPhysics(),
         children: [
-          const SizedBox(height: 50),
-          Container(
-            height: 200,
-            width: 200,
-            child:  CircleAvatar(
+          SizedBox(height: size.height*0.05,),
+          CircleAvatar(
               minRadius: 30,
               maxRadius: 100,
               backgroundImage: NetworkImage(studentProfile[0]['photourl'].toString()),
             ),
-          ),
 
-          const SizedBox(height: 24),
+
+          SizedBox(height: size.height*0.04,),
           Row(
             children: [
-              const SizedBox(width: 150,),
+              SizedBox(width: size.width*0.35,),
               const Text("Editable ",style: bigTextGreenHeading,),
               const SizedBox(width: 10,),
               FlutterSwitch(
                 activeColor: Colors.lime,
-                width: 60.0,
-                height: 40.0,
+                width: size.width*0.15,
+                height: size.height*0.05,
                 valueFontSize: 15.0,
                 toggleSize: 15.0,
                 value: status,
@@ -103,19 +101,13 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
             text:studentProfile[0]['name'],
             onChanged: (name) {}, enabled: false,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             label: 'Aadhar Number',
             text:studentProfile[0]['aadharC'],
             onChanged: (aadhar) {}, enabled: false,
           ),
-          // const SizedBox(height: 24),
-          // TextFieldWidget(
-          //   label: 'Pan Card Number',
-          //   text:panCard,
-          //   onChanged: (panCard) {}, enabled: false,
-          // ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             enabled: false,
             label: 'Email',
@@ -123,7 +115,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
             onChanged: (value) {
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             enabled: status,
             label: 'Phone Number',
@@ -133,7 +125,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
             },
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             enabled: status,
             label: 'Address',
@@ -143,7 +135,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
               address=value;
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.04,),
           Center(
             child:ElevatedButton(onPressed: () async{
               if(status==true){
@@ -173,7 +165,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           Center(
             child:ElevatedButton(onPressed: () async{
               _auth.signOut();
@@ -197,6 +189,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
               ),
             ),
           ),
+          SizedBox(height: size.height*0.04,),
         ],
       ),
     );

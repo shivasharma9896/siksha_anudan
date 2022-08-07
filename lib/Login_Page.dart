@@ -38,6 +38,7 @@ class _Login_PageState extends State<Login_Page> {
   }
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body:  ModalProgressHUD (
@@ -47,13 +48,12 @@ class _Login_PageState extends State<Login_Page> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20,
-              ),
+               SizedBox(height: size.height*0.02,),
               Center(
                 child: SvgPicture.asset(
                   logo,
-                  width: 350,
-                  height: 350,
+                  width: size.width*0.4,
+                  height: size.height*0.4,
                   semanticsLabel: 'Logo',
                 ),
               ),
@@ -62,13 +62,12 @@ class _Login_PageState extends State<Login_Page> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(50),
+                padding:  EdgeInsets.all(size.width*0.1),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Email", style: textLimeheading),
-                    const SizedBox(height: 10,
-                    ),
+                    const SizedBox(height: 10,),
                     TextField(
                       onChanged: (value){
                         email=value;
@@ -131,7 +130,7 @@ class _Login_PageState extends State<Login_Page> {
                       children:  [
                         const CheckB(),
                         const Text("Remember Me"),
-                        const SizedBox(width: 60,),
+                        SizedBox(width: size.width*0.11,),
                         GestureDetector(
                           onTap: (){
                             Navigator.pushNamed(context, '/forgot-pass');
@@ -161,7 +160,7 @@ class _Login_PageState extends State<Login_Page> {
                         catch (error) {
                           print(error);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("Please enter correct id and password"),
                               backgroundColor: Colors.red,
                             ),
@@ -189,6 +188,7 @@ class _Login_PageState extends State<Login_Page> {
                         ),
                       ),
                     ),
+                    SizedBox(height: size.height*0.02,),
                     Center(
                       child:ElevatedButton(onPressed: () async{
 
@@ -220,7 +220,7 @@ class _Login_PageState extends State<Login_Page> {
                   borderRadius: BorderRadius.circular(10.0),
                   color: Colors.lime,
                 ),
-                width: 400.0,
+                width: size.width,
                 height: 25.0,
                 alignment: Alignment.center, // align your child's position.
               ),

@@ -34,8 +34,13 @@ class _History_Profile_CardState extends State<History_Profile_Card> {
   }
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     double percent=(studentProfile[0]['amountRec']/studentProfile[0]['amountReq'] *100) ;
     int per=percent.round();
+    String name=studentProfile[0]['name'];
+    if(name.length>13){
+      name=name.substring(0,13)+"..";
+    }
     return Container(
       margin: const EdgeInsets.all(15),
       padding: const EdgeInsets.only(top: 10),
@@ -57,7 +62,7 @@ class _History_Profile_CardState extends State<History_Profile_Card> {
                   ),
                   const SizedBox(height: 10,),
                   LinearPercentIndicator(
-                    width: 100,
+                    width: size.width*0.25,
                     lineHeight: 20,
                     center:  Text('$per%'),
                     progressColor: Colors.lightGreen,
@@ -68,10 +73,10 @@ class _History_Profile_CardState extends State<History_Profile_Card> {
                   ),
                 ],
               ),
-              const SizedBox(width: 50,),
+              SizedBox(width: size.width*0.08,),
               Column(
                 children: [
-                   Text(studentProfile[0]['name'],style:mainBlackHeading),
+                   Text(name,style:mainBlackHeading),
                   const SizedBox(height: 15,),
                   Row(
                     children:  [

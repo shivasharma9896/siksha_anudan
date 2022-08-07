@@ -53,6 +53,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
   }
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     String phoneNumber=donerProfile[0]['phonenum'].toString();
     String address=donerProfile[0]['address'];
     return Scaffold(
@@ -61,27 +62,24 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
         padding: const EdgeInsets.symmetric(horizontal: 32),
         physics: const BouncingScrollPhysics(),
         children: [
-          const SizedBox(height: 50),
-          Container(
-            height: 200,
-            width: 200,
-            child:  CircleAvatar(
+          SizedBox(height: size.height*0.05,),
+            CircleAvatar(
               minRadius: 30,
               maxRadius: 100,
               backgroundImage: NetworkImage(donerProfile[0]['photourl'].toString()),
             ),
-          ),
 
-          const SizedBox(height: 24),
+
+          SizedBox(height: size.height*0.04,),
           Row(
             children: [
-              const SizedBox(width: 150,),
+              SizedBox(width: size.width*0.35,),
               const Text("Editable ",style: bigTextGreenHeading,),
               const SizedBox(width: 10,),
               FlutterSwitch(
                 activeColor: Colors.lime,
-                width: 60.0,
-                height: 40.0,
+                width: size.width*0.15,
+                height: size.height*0.05,
                 valueFontSize: 15.0,
                 toggleSize: 15.0,
                 value: status,
@@ -101,19 +99,19 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
             text:donerProfile[0]['name'],
             onChanged: (name) {}, enabled: false,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             label: 'Aadhar Number',
             text:donerProfile[0]['aadharC'],
             onChanged: (aadhar) {}, enabled: false,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             label: 'Pan Card Number',
             text:donerProfile[0]['pancard'],
             onChanged: (panCard) {}, enabled: false,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             enabled: false,
             label: 'Email',
@@ -121,7 +119,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
             onChanged: (value) {
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             enabled: status,
             label: 'Phone Number',
@@ -131,7 +129,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
             },
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           TextFieldWidget(
             enabled: status,
             label: 'Address',
@@ -141,7 +139,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
               address=value;
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.04,),
           Center(
             child:ElevatedButton(onPressed: () async{
               if(status==true){
@@ -171,7 +169,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: size.height*0.02,),
           Center(
             child:ElevatedButton(onPressed: () async{
               _auth.signOut();
@@ -195,6 +193,7 @@ class _DonerProfile_Page extends State<DonerProfile_Page> {
               ),
             ),
           ),
+          SizedBox(height: size.height*0.04,),
         ],
       ),
     );

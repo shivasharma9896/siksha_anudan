@@ -96,7 +96,7 @@ class _Registration_Donor extends State<Registration_Donor > {
   }
   @override
   Widget build(BuildContext context) {
-
+    final size=MediaQuery.of(context).size;
     final steps = [
       CoolStep(
 
@@ -306,8 +306,8 @@ class _Registration_Donor extends State<Registration_Donor > {
                   ),
                   _photo != null
                       ? Image.file(_photo!,
-                      width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.network('images/default-placeholder-image.png'),
+                      width: size.width*0.7, height: size.height*0.3, fit: BoxFit.cover)
+                      : Image.asset('assets/images/default-placeholder-image.png'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -321,8 +321,8 @@ class _Registration_Donor extends State<Registration_Donor > {
                   ),
                   _signature != null
                       ? Image.file(_signature!,
-                      width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.network('images/default-placeholder-image.png'),
+                      width: size.width*0.7, height: size.height*0.3, fit: BoxFit.cover)
+                      : Image.asset('assets/images/default-placeholder-image.png'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -336,82 +336,84 @@ class _Registration_Donor extends State<Registration_Donor > {
                   ),
                   _aadhar != null
                       ? Image.file(_aadhar!,
-                      width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.network('images/default-placeholder-image.png'),
+                      width: size.width*0.7, height: size.height*0.3, fit: BoxFit.cover)
+                      : Image.asset('assets/images/default-placeholder-image.png'),
                 ],
               )),
           validation: () {  }),
       CoolStep(
           title: 'Confirmation',
           subtitle: 'Recheck the entries you have made. You can change some of them in future',
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Center(child: ClipOval(child:_photo != null?Image.file(_photo!,width:250,height:250,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),)),
-              const SizedBox(height: 40,),
+          content: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Center(child: ClipOval(child:_photo != null?Image.file(_photo!,width: size.width*0.5, height: size.height*0.25, fit: BoxFit.cover): Image.network('images/default-placeholder-image.png'),)),
+                 SizedBox(height: size.height*0.05,),
 
-              apperance(
-                title: 'Name',
-                value: _name.text,
-                a: 99,
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    const Text('Date of Birth',style: TextStyle(
-                        fontWeight: FontWeight.bold
-                    ),
-                    ),
-                    const SizedBox(width:56 ,),
-                    Text('$_dayvalue/$_monvalue/$_yearvalue',style: const TextStyle(
-                        fontWeight: FontWeight.w300
-                    ),
-                    ),
-                  ],
+                apperance(
+                  title: 'Name',
+                  value: _name.text,
+                  a: size.width*0.256,
                 ),
-              ),
 
-              apperance(
-                title: 'Email',
-                value: _email.text,
-                //a: 135,
-                a:100,
-              ),
-              apperance(
-                title:'Phone Number',
-                value:_phonenum.text,
-                a:76-35,
-              ),
-              apperance(
-                title: 'Address',
-                value: _address.text,
-                // a: 166,
-                a:120-35,
-              ),
-              apperance(
-                title: 'Aadhar Number',
-                value: _aadharC.text,
-                // a: 166,
-                a:72-35,
-              ),
-              apperance(
-                title: 'Pancard Number',
-                value: _pancard.text,
-                // a: 166,
-                a:65-35,
-              ),
-              // Text('Date of Birth : ${_dayvalue}/${_monvalue}/${_yearvalue}',
-              //   style: const TextStyle(
-              //       fontWeight: FontWeight.bold
-              // ),
-              // ),
+                   Row(
+                    children: [
+                      const Text('Date of Birth',style: TextStyle(
+                          fontWeight: FontWeight.bold
+                      ),
+                      ),
+                      SizedBox(width:size.width*0.15,),
+                      Text('$_dayvalue/$_monvalue/$_yearvalue',style: const TextStyle(
+                          fontWeight: FontWeight.w300
+                      ),
+                      ),
+                    ],
+                  ),
 
-              const SizedBox(height: 30,),
-              const SizedBox(height: 20,),
-              const SizedBox(height: 40,),
-              Center(child: _signature != null?Image.file(_signature!,width:300,height:150,fit:BoxFit.cover): Image.network('images/default-placeholder-image.png'),),
-            ],
+
+                apperance(
+                  title: 'Email',
+                  value: _email.text,
+                  //a: 135,
+                  a:size.width*0.26,
+                ),
+                apperance(
+                  title:'Phone Number',
+                  value:_phonenum.text,
+                  a:size.width*0.11,
+                ),
+                apperance(
+                  title: 'Address',
+                  value: _address.text,
+                  // a: 166,
+                  a:size.width*0.22,
+                ),
+                apperance(
+                  title: 'Aadhar Number',
+                  value: _aadharC.text,
+                  // a: 166,
+                  a:size.width*0.1,
+                ),
+                apperance(
+                  title: 'Pancard Number',
+                  value: _pancard.text,
+                  // a: 166,
+                  a:size.width*0.09,
+                ),
+                // Text('Date of Birth : ${_dayvalue}/${_monvalue}/${_yearvalue}',
+                //   style: const TextStyle(
+                //       fontWeight: FontWeight.bold
+                // ),
+                // ),
+
+                SizedBox(height: size.height*0.04,),
+
+                Center(child: _signature != null?Image.file(_signature!,width: size.width*0.7, height: size.height*0.2, fit: BoxFit.cover): Image.network('images/default-placeholder-image.png'),),
+              ],
+            ),
           ),
           validation: () {  }),
     ];

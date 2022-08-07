@@ -24,45 +24,52 @@ class _SearchStudentPage extends State<SearchStudent_Page> {
 
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     FirebaseFirestore _firestore=FirebaseFirestore.instance;
     return Scaffold(
         backgroundColor: Colors.white,
         body:  SafeArea(
           child: Column(
             children: [
-              SizedBox(height: 40,),
+              SizedBox(height: size.height*0.04,),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(width: size.width*0.15,),
                 Text("Income : ",style: TextStyle(fontSize: 20,color: Colors.grey[700]),),
-                SizedBox(width: 20,),
-                Container(
-                    width: 180,
-                    child:DropdownButton<String>(
-                      style: TextStyle(fontSize: 20,color: Colors.green),
-                      value: income,
-                      // Step 4.
-                      items: <String> ["All","Below 1,00,000",
-                        "1,00,000 - 3,00,000",
-                        "4,00,000 - 7,00,000",
-                        "7,00,000 - 10,00,000"]
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        );
-                      }).toList(),
-                      // Step 5.
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          income = newValue!;
-                        });
-                      },
-                    )
+                SizedBox(width: size.width*0.05,),
+                 Expanded(
+                   child: SizedBox(
+                      height: size.height*0.04,
+                        width: size.width*0.1,
+                        child:DropdownButton<String>(
+                          style: TextStyle(fontSize: 20,color: Colors.green),
+                          value: income,
+                          // Step 4.
+                          items: <String> ["All","Below 1,00,000",
+                            "1,00,000 - 3,00,000",
+                            "4,00,000 - 7,00,000",
+                            "7,00,000 - 10,00,000"]
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            );
+                          }).toList(),
+                          // Step 5.
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              income = newValue!;
+                            });
+                          },
+                        )
+
                 ),
+                 ),
               ],),
               Expanded(child: StreamBuilder(
                 stream: _firestore.collection("Student").where('status',isEqualTo: "approved").snapshots(),
