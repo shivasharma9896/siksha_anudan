@@ -5,17 +5,18 @@ class Home_Page extends StatelessWidget{
   @override
 
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const SizedBox(height: 120,
+         SizedBox(height: size.height*0.1,
         ),
       SvgPicture.asset(
       logo,
       semanticsLabel: 'Logo',
       ),
-        const SizedBox(height: 50,
+        SizedBox(height: size.height*0.1,
         ),
       Expanded(
       child: Container(

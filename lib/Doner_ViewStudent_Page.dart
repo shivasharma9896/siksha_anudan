@@ -100,27 +100,32 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
     print("External Wallet");
   }
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
+    String address=widget.studentProfile['address'];
+    if(address.length>13){
+      address=address.substring(0,13)+"..";
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         physics: const BouncingScrollPhysics(),
         children: [
-          const SizedBox(height: 50),
+          SizedBox(height: size.height*0.05),
            CircleAvatar(
             minRadius: 60,
             maxRadius: 70,
             backgroundImage: NetworkImage(widget.studentProfile['photourl']),
           ),
-          const SizedBox(height: 24,),
+          SizedBox(height: size.height*0.03),
           const Text("Personal Information",style: bigTextGreenHeading,),
           Container(
             margin: const EdgeInsets.all(10),
-            padding:  EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             decoration: limeCard,
             child: Column(
               children: [
-                const SizedBox(height: 24),
+                SizedBox(height: size.height*0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -141,7 +146,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Phone Number : ",style: bigTextGreenHeading,),
+                    const Text("Phone No.  : ",style: bigTextGreenHeading,),
                     Text(widget.studentProfile['phonenum'],style: mainBlackHeading,),
                   ],
                 ),
@@ -151,7 +156,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Text("Address : ",style: bigTextGreenHeading,),
-                    Text(widget.studentProfile['address'],style: mainBlackHeading,),
+                    Text(address,style: mainBlackHeading,),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -166,7 +171,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
             decoration: limeCard,
             child: Column(
               children: [
-                const SizedBox(height: 24,),
+                const SizedBox(height: 10,),
                 const Text("SSC Details",style: headingInCard,),
                 const SizedBox(height: 24,),
                 Row(
@@ -232,47 +237,6 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                     Text(widget.studentProfile['intermediatepercent'],style: mainBlackHeading,),
                   ],
                 ),
-                // const SizedBox(height: 24,),
-                // const Text("UG Details",style: headingInCard,),
-                // const SizedBox(height: 24,),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     Wrap(
-                //       direction: Axis.vertical, //Vertical || Horizontal
-                //       children: <Widget>[
-                //         const Text("College Name : ",style: bigTextGreenHeading,),
-                //         Text(colName,style: mainBlackHeading,),
-                //       ],
-                //     ),
-                //   ],
-                // ),
-                //
-                // const SizedBox(height: 24),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     const Text("University : ",style: bigTextGreenHeading,),
-                //     Text(colUni,style: mainBlackHeading,),
-                //   ],
-                // ),
-                //
-                // const SizedBox(height: 24),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     const Text("Passing Year : ",style: bigTextGreenHeading,),
-                //     Text(colPassingYear,style: mainBlackHeading,),
-                //   ],
-                // ),
-                // const SizedBox(height: 24),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     const Text("Percentage : ",style: bigTextGreenHeading,),
-                //     Text(colPercentage,style: mainBlackHeading,),
-                //   ],
-                // ),
                 const SizedBox(height: 24),
               ],
             ),
@@ -329,19 +293,11 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                     Text(widget.studentProfile['appFor'],style: mainBlackHeading,),
                   ],
                 ),
-                //const SizedBox(height: 24),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     const Text("College Name : ",style: bigTextGreenHeading,),
-                //     Text(college,style: mainBlackHeading,),
-                //   ],
-                // ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Total Amount : ",style: bigTextGreenHeading,),
+                    const Text("Total ₹:   ",style: bigTextGreenHeading,),
                     Text(widget.studentProfile['amountReq'].toString(),style: mainBlackHeading,),
                   ],
                 ),
@@ -349,7 +305,7 @@ class _DonerViewStudent_Page extends State<DonerViewStudent_Page> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Received Amount : ",style: bigTextGreenHeading,),
+                    const Text("Received ₹:   ",style: bigTextGreenHeading,),
                     Text(widget.studentProfile['amountRec'].toString(),style: mainBlackHeading,),
                   ],
                 ),

@@ -12,7 +12,12 @@ class Search_Profile_Card extends StatefulWidget {
 class _Search_Profile_CardState extends State<Search_Profile_Card> {
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     double percent=(widget.studentProfileList['amountRec']/widget.studentProfileList['amountReq'] *100) ;
+    String name=widget.studentProfileList['name'];
+    if(name.length>13){
+      name=name.substring(0,13)+"..";
+    }
     int per=percent.round();
     return GestureDetector(
       onTap: (){
@@ -21,7 +26,7 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
       child: Container(
         margin: const EdgeInsets.all(15),
           padding: const EdgeInsets.only(top: 10),
-          height: 125,
+          height: size.height*0.17,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.grey[200],
@@ -39,7 +44,7 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
                       ),
                       const SizedBox(height: 10,),
                       LinearPercentIndicator(
-                        width: 100,
+                        width: size.width*0.25,
                         lineHeight: 20,
                         center: Text ("$per%"),
                         progressColor: Colors.lightGreen,
@@ -50,26 +55,26 @@ class _Search_Profile_CardState extends State<Search_Profile_Card> {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 40,),
+                  SizedBox(width: size.width*0.1,),
                   Column(
                     children: [
-                       Text(widget.studentProfileList['name'],style:mainBlackHeading),
+                       Text(name,style:mainBlackHeading),
                       const SizedBox(height: 15,),
                       Row(
                         children:  [
-                          Text("Applied For : ",style: smallBlackHeading),
+                          const Text("Applied For : ",style: smallBlackHeading),
                           Text(widget.studentProfileList['appFor']),
                         ],
                       ),
                       Row(
                         children:  [
-                          Text("Aid Amount : ", style: smallBlackHeading),
+                          const Text("Aid Amount : ", style: smallBlackHeading),
                           Text(widget.studentProfileList['amountReq'].toString()),
                         ],
                       ),
                       Row(
                         children:  [
-                          Text("Aid Received : ", style: smallBlackHeading),
+                          const Text("Aid Received : ", style: smallBlackHeading),
                           Text(widget.studentProfileList['amountRec'].toString()),
                         ],
                       )
