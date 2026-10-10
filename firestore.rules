@@ -1,0 +1,98 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() &&
+        request.auth.token.keys().hasAny(['admin']) &&
+        request.auth.token.admin == true;
+    }
+
+    function isDonor() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/Donor/$(request.auth.uid));
+    }
+
+    match /Donor/{uid} {
+      allow get: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow list: if false;
+      allow create: if signedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.keys().hasOnly([
+          'uid', 'email', 'name', 'phonenum', 'address', 'aadharC',
+          'pancard', 'photourl', 'signurl', 'aadharurl', 'dob'
+        ]) &&
+        request.resource.data.uid == uid &&
+        request.resource.data.email == request.auth.token.email;
+      allow update: if signedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['phonenum', 'address']);
+      allow delete: if false;
+    }
+
+    match /StudentPublic/{uid} {
+      allow get: if isAdmin() ||
+        (signedIn() && request.auth.uid == uid) ||
+        (isDonor() && resource.data.status == 'approved');
+      allow list: if isAdmin() ||
+        (isDonor() && resource.data.status == 'approved');
+      allow create: if signedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.keys().hasOnly([
+          'uid', 'name', 'highschoolcollegename', 'highschoolboard',
+          'highschoolpercent', 'intermediatecollegename', 'intermediateboard',
+          'intermediatepercent', 'photourl', 'amountReq', 'appFor',
+          'amountRec', 'status', 'income'
+        ]) &&
+        request.resource.data.uid == uid &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.amountRec == 0 &&
+        request.resource.data.amountReq is int &&
+        request.resource.data.amountReq > 0 &&
+        request.resource.data.name is string;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /StudentPrivate/{uid} {
+      allow get: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow list: if false;
+      allow create: if signedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.keys().hasOnly([
+          'uid', 'email', 'phonenum', 'address', 'aadharC',
+          'signurl', 'aadharurl', 'dob'
+        ]) &&
+        request.resource.data.uid == uid &&
+        request.resource.data.email == request.auth.token.email &&
+        request.resource.data.phonenum is string &&
+        request.resource.data.address is string;
+      allow update: if signedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['phonenum', 'address']);
+      allow delete: if false;
+    }
+
+    match /transaction/{transactionId} {
+      allow get, list: if isAdmin() ||
+        (isDonor() && resource.data.DonorEmail == request.auth.token.email);
+      allow create, update, delete: if false;
+    }
+
+    // Legacy student documents contain fields that must not be exposed to donors.
+    match /Student/{uid} {
+      allow get: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow list, create, update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

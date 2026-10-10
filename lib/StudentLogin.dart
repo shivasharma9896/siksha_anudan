@@ -95,7 +95,7 @@ class _SLogin_PageState extends State<SLogin_Page> {
                     ),
                     TextField(
                       onChanged: (value){
-                        password=value;
+                        password = value;
                       },
                       textAlign: TextAlign.center,
                       obscureText: !_passwordVisible,

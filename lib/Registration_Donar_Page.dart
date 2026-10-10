@@ -9,19 +9,17 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 import 'package:siksha_anudan/Doner%20Home.dart';
 import 'package:siksha_anudan/model/Donor_model.dart';
 
 class Registration_Donor extends StatefulWidget {
-  const Registration_Donor ({Key? key}) : super(key: key);
+  const Registration_Donor({Key? key}) : super(key: key);
 
   @override
-  State<Registration_Donor > createState() => _Registration_Donor ();
+  State<Registration_Donor> createState() => _Registration_Donor();
 }
 
-class _Registration_Donor extends State<Registration_Donor > {
+class _Registration_Donor extends State<Registration_Donor> {
   final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   final TextEditingController _name = TextEditingController();
@@ -42,9 +40,10 @@ class _Registration_Donor extends State<Registration_Donor > {
   File? _signature;
   File? _aadhar;
   bool _isLoading = false;
-  Future getPhoto(ImageSource source) async{
+  Future getPhoto(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source, imageQuality: 70);
+      final image =
+          await ImagePicker().pickImage(source: source, imageQuality: 70);
       if (image == null) return;
       //final imageTemporary = File(image.path);
       final imagePermanent = File(image.path);
@@ -52,12 +51,12 @@ class _Registration_Donor extends State<Registration_Donor > {
       setState(() {
         this._photo = imagePermanent;
       });
-    }
-    on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print('Failed to pick image:$e');
     }
   }
-  Future getSignature(ImageSource source) async{
+
+  Future getSignature(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
@@ -67,12 +66,12 @@ class _Registration_Donor extends State<Registration_Donor > {
       setState(() {
         this._signature = imagePermanent;
       });
-    }
-    on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print('Failed to pick image:$e');
     }
   }
-  Future getsop(ImageSource source) async{
+
+  Future getsop(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
@@ -82,27 +81,18 @@ class _Registration_Donor extends State<Registration_Donor > {
       setState(() {
         this._aadhar = imagePermanent;
       });
-    }
-    on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print('Failed to pick image:$e');
     }
   }
-  Future<File> saveFilePermanentely(String imagePath) async{
-    final directory =await getApplicationDocumentsDirectory();
-    final name=basename(imagePath);
-    final image=File('${directory.path}/$name');
 
-    return File(imagePath).copy(image.path);
-  }
   @override
   Widget build(BuildContext context) {
-    final size=MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     final steps = [
       CoolStep(
-
         title: 'Basic Information',
         subtitle: 'Please fill some of the basic information to get started',
-
         content: Form(
           key: _formKey,
           child: Column(
@@ -126,7 +116,6 @@ class _Registration_Donor extends State<Registration_Donor > {
                   }
                 },
                 controller: _name,
-
               ),
               _buildTextField(
                 labelText: 'Email Address',
@@ -213,7 +202,6 @@ class _Registration_Donor extends State<Registration_Donor > {
                 //obscureText : true,
                 controller: _pancard,
               ),
-
               const SizedBox(
                 height: 5,
               ),
@@ -260,9 +248,7 @@ class _Registration_Donor extends State<Registration_Donor > {
               const SizedBox(
                 height: 12,
               ),
-
               _buildTextField(
-
                 labelText: 'Enter Password',
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -295,113 +281,131 @@ class _Registration_Donor extends State<Registration_Donor > {
           subtitle: 'To verify the identity of yours',
           content: Center(
               child: Column(
-                children: [
-                  CustomButton(
-                    title: 'Upload Photograph',
-                    icon: Icons.image_outlined,
-                    onClick: () => getPhoto(ImageSource.gallery),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _photo != null
-                      ? Image.file(_photo!,
-                      width: size.width*0.7, height: size.height*0.3, fit: BoxFit.cover)
-                      : Image.asset('assets/images/default-placeholder-image.png'),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  CustomButton(
-                    title: 'Upload Pancard',
-                    icon: Icons.image_outlined,
-                    onClick: () => getSignature(ImageSource.gallery),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _signature != null
-                      ? Image.file(_signature!,
-                      width: size.width*0.7, height: size.height*0.3, fit: BoxFit.cover)
-                      : Image.asset('assets/images/default-placeholder-image.png'),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  CustomButton(
-                    title: 'Upload Aadhar',
-                    icon: Icons.image_outlined,
-                    onClick: () => getsop(ImageSource.gallery),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _aadhar != null
-                      ? Image.file(_aadhar!,
-                      width: size.width*0.7, height: size.height*0.3, fit: BoxFit.cover)
-                      : Image.asset('assets/images/default-placeholder-image.png'),
-                ],
-              )),
-          validation: () {  }),
+            children: [
+              CustomButton(
+                title: 'Upload Photograph',
+                icon: Icons.image_outlined,
+                onClick: () => getPhoto(ImageSource.gallery),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              _photo != null
+                  ? Image.file(_photo!,
+                      width: size.width * 0.7,
+                      height: size.height * 0.3,
+                      fit: BoxFit.cover)
+                  : Image.asset('assets/images/default-placeholder-image.png'),
+              const SizedBox(
+                height: 40,
+              ),
+              CustomButton(
+                title: 'Upload Pancard',
+                icon: Icons.image_outlined,
+                onClick: () => getSignature(ImageSource.gallery),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              _signature != null
+                  ? Image.file(_signature!,
+                      width: size.width * 0.7,
+                      height: size.height * 0.3,
+                      fit: BoxFit.cover)
+                  : Image.asset('assets/images/default-placeholder-image.png'),
+              const SizedBox(
+                height: 40,
+              ),
+              CustomButton(
+                title: 'Upload Aadhar',
+                icon: Icons.image_outlined,
+                onClick: () => getsop(ImageSource.gallery),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              _aadhar != null
+                  ? Image.file(_aadhar!,
+                      width: size.width * 0.7,
+                      height: size.height * 0.3,
+                      fit: BoxFit.cover)
+                  : Image.asset('assets/images/default-placeholder-image.png'),
+            ],
+          )),
+          validation: () {}),
       CoolStep(
           title: 'Confirmation',
-          subtitle: 'Recheck the entries you have made. You can change some of them in future',
+          subtitle:
+              'Recheck the entries you have made. You can change some of them in future',
           content: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Center(child: ClipOval(child:_photo != null?Image.file(_photo!,width: size.width*0.5, height: size.height*0.25, fit: BoxFit.cover): Image.network('images/default-placeholder-image.png'),)),
-                 SizedBox(height: size.height*0.05,),
+                Center(
+                    child: ClipOval(
+                  child: _photo != null
+                      ? Image.file(_photo!,
+                          width: size.width * 0.5,
+                          height: size.height * 0.25,
+                          fit: BoxFit.cover)
+                      : Image.network('images/default-placeholder-image.png'),
+                )),
+                SizedBox(
+                  height: size.height * 0.05,
+                ),
 
                 apperance(
                   title: 'Name',
                   value: _name.text,
-                  a: size.width*0.256,
+                  a: size.width * 0.256,
                 ),
 
-                   Row(
-                    children: [
-                      const Text('Date of Birth',style: TextStyle(
-                          fontWeight: FontWeight.bold
-                      ),
-                      ),
-                      SizedBox(width:size.width*0.15,),
-                      Text('$_dayvalue/$_monvalue/$_yearvalue',style: const TextStyle(
-                          fontWeight: FontWeight.w300
-                      ),
-                      ),
-                    ],
-                  ),
-
+                Row(
+                  children: [
+                    const Text(
+                      'Date of Birth',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: size.width * 0.15,
+                    ),
+                    Text(
+                      '$_dayvalue/$_monvalue/$_yearvalue',
+                      style: const TextStyle(fontWeight: FontWeight.w300),
+                    ),
+                  ],
+                ),
 
                 apperance(
                   title: 'Email',
                   value: _email.text,
                   //a: 135,
-                  a:size.width*0.26,
+                  a: size.width * 0.26,
                 ),
                 apperance(
-                  title:'Phone Number',
-                  value:_phonenum.text,
-                  a:size.width*0.11,
+                  title: 'Phone Number',
+                  value: _phonenum.text,
+                  a: size.width * 0.11,
                 ),
                 apperance(
                   title: 'Address',
                   value: _address.text,
                   // a: 166,
-                  a:size.width*0.22,
+                  a: size.width * 0.22,
                 ),
                 apperance(
                   title: 'Aadhar Number',
                   value: _aadharC.text,
                   // a: 166,
-                  a:size.width*0.1,
+                  a: size.width * 0.1,
                 ),
                 apperance(
                   title: 'Pancard Number',
                   value: _pancard.text,
                   // a: 166,
-                  a:size.width*0.09,
+                  a: size.width * 0.09,
                 ),
                 // Text('Date of Birth : ${_dayvalue}/${_monvalue}/${_yearvalue}',
                 //   style: const TextStyle(
@@ -409,13 +413,22 @@ class _Registration_Donor extends State<Registration_Donor > {
                 // ),
                 // ),
 
-                SizedBox(height: size.height*0.04,),
+                SizedBox(
+                  height: size.height * 0.04,
+                ),
 
-                Center(child: _signature != null?Image.file(_signature!,width: size.width*0.7, height: size.height*0.2, fit: BoxFit.cover): Image.network('images/default-placeholder-image.png'),),
+                Center(
+                  child: _signature != null
+                      ? Image.file(_signature!,
+                          width: size.width * 0.7,
+                          height: size.height * 0.2,
+                          fit: BoxFit.cover)
+                      : Image.network('images/default-placeholder-image.png'),
+                ),
               ],
             ),
           ),
-          validation: () {  }),
+          validation: () {}),
     ];
 
     final stepper = CoolStepper(
@@ -473,6 +486,7 @@ class _Registration_Donor extends State<Registration_Donor > {
       ),
     );
   }
+
   Widget _buildNumberField({
     String? labelText,
     FormFieldValidator<String>? validator,
@@ -503,33 +517,37 @@ class _Registration_Donor extends State<Registration_Donor > {
         child: Row(
           children: [
             Icon(icon),
-            const SizedBox(width: 20,),
+            const SizedBox(
+              width: 20,
+            ),
             Center(child: Text(title))
           ],
         ),
       ),
     );
   }
+
   Widget apperance({
     required String title,
     required String value,
     required double a,
-  }){
+  }) {
     return Container(
       child: Row(
         children: [
-          Text(title,style: const TextStyle(
-              fontWeight: FontWeight.w900
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w900),
           ),
+          SizedBox(
+            width: a,
           ),
-          SizedBox(width: a,),
-          Text(value,style: const TextStyle(
-              fontWeight: FontWeight.w300
-          ),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w300),
           ),
         ],
       ),
-
     );
   }
 
@@ -538,91 +556,76 @@ class _Registration_Donor extends State<Registration_Donor > {
       setState(() {
         _isLoading = true;
       });
+      if (_photo == null || _signature == null || _aadhar == null) {
+        Fluttertoast.showToast(msg: "Please upload all required documents");
+        return;
+      }
+
       dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
-      if(_photo == null){
-        Fluttertoast.showToast(msg: "Please upload Profile picture");
-      }
-      else{
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child("DonorDocs")
-            .child(_aadharC.text + '_photo' + '.jpg');
-        await ref.putFile(_photo!);
-        photourl = await ref.getDownloadURL();
-      }
-      if(_signature == null){
-        Fluttertoast.showToast(msg: "Please upload Signature");
-      }
-      else{
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      final uid = credential.user!.uid;
+      final storage = FirebaseStorage.instance.ref();
 
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child("DonorDocs")
-            .child(_aadharC.text + '_sign' + '.jpg');
-        await ref.putFile(_signature!);
-        signurl = await ref.getDownloadURL();
-      }
-      if(_aadhar == null){
-        Fluttertoast.showToast(msg: "Please upload Aadhar photo");
-      }
-      else{
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child("DonorDocs")
-            .child(_aadharC.text + '_aadhar' + '.jpg');
-        await ref.putFile(_aadhar!);
-        aadharurl = await ref.getDownloadURL();
-      }
+      final photoRef = storage.child("donorDocuments/$uid/profile.jpg");
+      await photoRef.putFile(_photo!);
+      photourl = await photoRef.getDownloadURL();
 
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      postDetailsToFirestore();
+      final signatureRef = storage.child("donorDocuments/$uid/signature.jpg");
+      await signatureRef.putFile(_signature!);
+      signurl = signatureRef.fullPath;
+
+      final identityRef =
+          storage.child("donorDocuments/$uid/identity-document.jpg");
+      await identityRef.putFile(_aadhar!);
+      aadharurl = identityRef.fullPath;
+
+      await postDetailsToFirestore();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        Fluttertoast.showToast(msg: 'The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        Fluttertoast.showToast(msg: 'The account already exists for that email.');
-        print('The account already exists for that email.');
+        Fluttertoast.showToast(
+            msg: 'The account already exists for that email.');
+      } else {
+        Fluttertoast.showToast(msg: 'Registration failed. Please try again.');
       }
     } catch (e) {
       print(e);
-    }
-    finally {
-      setState(() {
-        _isLoading = false;
-      });
+      Fluttertoast.showToast(msg: 'Registration failed. Please try again.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
-    postDetailsToFirestore() async{
-      //calling our firestore
-      //calling our model
-      //sending these values
-      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-      User? user = auth.currentUser;
-      DonorModel donorModel = DonorModel();
+  Future<void> postDetailsToFirestore() async {
+    final user = auth.currentUser!;
+    final donorModel = DonorModel(
+      email: user.email,
+      uid: user.uid,
+      name: _name.text,
+      phonenum: _phonenum.text,
+      address: _address.text,
+      aadharC: _aadharC.text,
+      pancard: _pancard.text,
+      photourl: photourl,
+      signurl: signurl,
+      aadharurl: aadharurl,
+      dob: dob,
+    );
 
-      donorModel.email = user!.email;
-      donorModel.uid = user.uid;
-      donorModel.name = _name.text;
-      donorModel.phonenum = _phonenum.text;
-      donorModel.address = _address.text;
-      donorModel.aadharC = _aadharC.text;
-      donorModel.pancard = _pancard.text;
-      donorModel.photourl = photourl;
-      donorModel.signurl = signurl;
-      donorModel.aadharurl = aadharurl;
-      donorModel.dob = dob;
-
-      await firebaseFirestore
-          .collection("Donor")
-          .doc(user.uid)
-          .set(donorModel.toMap());
-      Fluttertoast.showToast(msg: "Account created successfully!");
-      //Navigator.pushNamed(this.context,'/d-home');
-      Navigator.push(this.context, MaterialPageRoute(builder: (context) => DonerHome()));
-      //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+    await FirebaseFirestore.instance
+        .collection("Donor")
+        .doc(user.uid)
+        .set(donorModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully!");
+    Navigator.push(
+      this.context,
+      MaterialPageRoute(builder: (context) => DonerHome()),
+    );
   }
 }
