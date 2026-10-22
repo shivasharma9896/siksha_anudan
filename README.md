@@ -1,42 +1,118 @@
 # Shiksha Anudan
 
-Shiksha Anudan is a Flutter mobile app built to connect students seeking financial aid with donors who want to support education.
+Shiksha Anudan is a Flutter application that connects students who need
+financial assistance with donors who want to support education.
 
-## Project overview
+The project currently contains the student and donor mobile application. The
+administrator application is maintained separately in
+[shiksha_Admin_app](https://github.com/shivasharma9896/shiksha_Admin_app).
 
-- Donor login and registration
-- Student login and registration
-- Student profile and scholarship need details
-- Donor search and filtering for students
-- Donation history and transaction tracking
-- Student progress tracking dashboard
+## Current project status
 
-## Tech stack
+**Status: functional college-project prototype**
+
+The application works for local development and demonstration. Student
+registration has been verified against local Firebase emulators, including
+Firebase Authentication, Cloud Firestore, and Firebase Storage.
+
+The application is **not approved for production release yet**. The main
+remaining work is:
+
+- Configure and verify production Firebase Storage.
+- Complete live image and document upload testing.
+- Finish student, donor, administrator, login, password-reset, and failure-path
+  testing.
+- Migrate the administrator application to the current student data structure.
+- Add trusted payment verification before enabling real donations.
+- Complete release, security, privacy, monitoring, and backup checks.
+
+## Main features
+
+### Student features
+
+- Create a student account.
+- Submit personal, education, and financial-aid details.
+- Upload registration documents.
+- View application and funding progress.
+- View and update permitted profile information.
+- Sign in and request a password reset.
+
+### Donor features
+
+- Create a donor account.
+- Sign in to the donor area.
+- Search for eligible students.
+- View approved student information.
+- Review donation history.
+
+### Administrator features
+
+Administrator functionality is provided by the separate
+[shiksha_Admin_app](https://github.com/shivasharma9896/shiksha_Admin_app).
+It is intended to support student review, approval, blocking, donor
+management, and transaction monitoring.
+
+The administrator app currently expects legacy `Student/{uid}` documents,
+while this application creates `StudentPublic/{uid}` and
+`StudentPrivate/{uid}`. These applications must use the same schema before the
+complete administrator workflow can be tested.
+
+## Technology
 
 - Flutter
 - Firebase Authentication
 - Cloud Firestore
 - Firebase Storage
-- Material Design UI
+- Material Design
+
+## Firebase data structure
+
+The current security model separates public and private information:
+
+| Collection | Purpose |
+|---|---|
+| `StudentPublic/{uid}` | Education information, funding request, status, and approved-profile data |
+| `StudentPrivate/{uid}` | Contact details, Aadhaar number, date of birth, and private document paths |
+| `Donor/{uid}` | Donor profile information |
+| `transaction/{id}` | Donation records created by a trusted backend or administrator process |
+
+Student and donor identity documents are intended to be stored under:
+
+```text
+studentDocuments/{uid}/...
+donorDocuments/{uid}/...
+```
+
+The mobile client must not create or modify payment records or raised-total
+values. A payment provider callback alone is not sufficient proof of payment.
 
 ## Local setup
 
-1. Install Flutter SDK and ensure it is available in your PATH.
-2. Clone the project and open it in your preferred IDE.
-3. Run:
+### Requirements
+
+1. Install Flutter.
+2. Install Node.js and npm.
+3. Install the Firebase CLI.
+4. Configure an Android emulator or physical Android device.
+5. Add the Firebase configuration files for the intended Firebase project.
+
+### Run the application
 
 ```bash
 flutter pub get
 flutter run
 ```
 
-## Firebase setup
+Do not use test flags when connecting to a production Firebase project.
 
-1. Create a Firebase project.
-2. Add Android and iOS apps to the Firebase project.
-3. Download and place the generated Firebase config files in the appropriate native project directories.
-4. Enable Email/Password authentication.
-5. Run the local Firestore and Storage rule tests:
+## Local Firebase emulator testing
+
+The repository includes local rules tests and an Android integration test. The
+emulators prevent test data from reaching the production Firebase project.
+
+### Run Firebase rules tests
+
+From the repository root:
 
 ```bash
 cd firebase-tests
@@ -44,49 +120,122 @@ npm ci
 npm test
 ```
 
-The emulator test suite uses synthetic accounts and records. It runs only against local emulators, configured on ports 9099 (Authentication), 8080 (Firestore), and 9199 (Storage). It tests student and donor account creation, private document uploads, profile reads, donor visibility of approved profiles, and denied client-side donation writes. Deploy separately with `firebase deploy --only firestore:rules,storage` only after reviewing and completing the migration steps below.
+The rules test suite uses local emulators on these ports:
 
-After completing those steps and verifying the Firebase project selection, deploy from the repository root with:
+| Service | Port |
+|---|---:|
+| Firebase Authentication | 9099 |
+| Cloud Firestore | 8080 |
+| Firebase Storage | 9199 |
+
+### Run the student registration integration test
+
+Start the Firebase emulators first, then run:
+
+```bash
+flutter test integration_test/student_registration_test.dart \
+  -d <android-device> \
+  --dart-define=USE_FIREBASE_EMULATORS=true \
+  --dart-define=USE_TEST_DATA=true
+```
+
+The test uses synthetic values and deterministic test files. It verifies:
+
+- Student account creation.
+- Authentication state.
+- `StudentPublic/{uid}` creation.
+- `StudentPrivate/{uid}` creation.
+- Profile-photo upload.
+- Signature upload.
+- Identity-document upload.
+
+`USE_FIREBASE_EMULATORS=true` routes Firebase services to local emulators.
+`USE_TEST_DATA=true` enables deterministic test values. Never use
+`USE_TEST_DATA=true` with a production Firebase project.
+
+## Testing status
+
+### Completed locally
+
+- Home-screen widget regression test.
+- Student registration validation and navigation.
+- Student registration with local Auth, Firestore, and Storage emulators.
+- Firebase Auth, Firestore, and Storage rules tests.
+- Login error handling improvements.
+- Password-reset success and invalid-email error handling.
+- Loading-state cleanup.
+- Protection against empty-profile crashes.
+
+### Still required
+
+- Donor registration end-to-end testing after production Storage is configured.
+- Emulator-backed student login testing.
+- Emulator-backed donor login testing.
+- Live password-reset email delivery testing.
+- Complete administrator login and workflow testing.
+- Complete approve/block testing using the shared student schema.
+- Release-build testing without emulator or test-data flags.
+- Device compatibility, accessibility, privacy, and security testing.
+
+### User testing report
+
+The current testing result is:
+
+**Local integration verified. Live Firebase partially verified. Production
+release not yet approved.**
+
+One live test created a temporary Firebase Authentication account. Review and
+remove that test account before using the production project with real users.
+
+## Security and deployment requirements
+
+Before deploying rules or using real user data:
+
+1. Back up Firestore and Storage.
+2. Confirm the selected Firebase project.
+3. Deploy and review Firestore and Storage rules.
+4. Migrate legacy `Student/{uid}` records to `StudentPublic/{uid}` and
+   `StudentPrivate/{uid}`.
+5. Move identity documents to the current document paths.
+6. Remove old document objects and revoke previously issued download tokens
+   where required.
+7. Confirm that private fields are not present in `StudentPublic`.
+8. Test student, donor, and administrator access in a staging project.
+9. Configure billing alerts and monitor Storage usage.
+
+Administrator access must be controlled by a trusted Firebase Admin SDK
+process using the `admin: true` custom claim. The mobile application must never
+set its own administrator claim.
+
+Rules can be deployed only after reviewing the data migration:
 
 ```bash
 firebase deploy --only firestore:rules,storage
 ```
 
-## Security rules and data migration
+## Future development plan
 
-The rules require the following document layout:
+The recommended order for completing the project is:
 
-- `Donor/{uid}` contains a donor's private profile and is readable only by that donor or an admin.
-- `StudentPublic/{uid}` contains approved-profile and education information shown to donors.
-- `StudentPrivate/{uid}` contains student contact details, Aadhaar number, and private document paths; only that student or an admin can read it.
-- `transaction/{id}` is read-only to clients. Only a trusted server/admin can create donation records or update raised totals.
+1. Configure the production Firebase Storage bucket and verify uploads safely.
+2. Complete student and donor login, password-reset, and invalid-input tests.
+3. Update the administrator application to use `StudentPublic` and
+   `StudentPrivate`.
+4. Add and verify trusted administrator authorization.
+5. Test pending, approve, and block workflows end to end.
+6. Build a trusted payment-verification backend.
+7. Re-enable donations only after server-side payment verification is working.
+8. Add release builds, crash reporting, analytics, backups, billing alerts, and
+   monitoring.
+9. Complete device, accessibility, privacy, and security testing.
+10. Publish only after staging verification and a rollback plan are documented.
 
-Before deploying to a Firebase project with existing users:
+## Suggested architecture improvements
 
-1. Back up Firestore and Storage.
-2. Migrate each legacy `Student/{uid}` record into `StudentPublic/{uid}` and `StudentPrivate/{uid}`. Keep new profiles pending until an administrator reviews them.
-3. Move student and donor identity documents into `studentDocuments/{uid}/...` and `donorDocuments/{uid}/...`. Revoke existing Firebase download tokens for identity documents and remove old `StudentDocs`/`DonorDocs` objects; rules cannot revoke a download URL token that has already been issued.
-4. Verify that no identity numbers, document download URLs, contact details, or other private fields remain in `StudentPublic`.
-5. Deploy the rules, then test student, donor, and admin access using Firebase Emulator Suite or a non-production Firebase project.
-
-Administrator access depends on a trusted Firebase Admin SDK process setting the boolean custom claim `admin: true`. Never allow the mobile app to set this claim. The current app has no admin-management screen.
-
-Donations are temporarily disabled in the client. Razorpay's client success callback is not authoritative, and Firestore rules cannot verify a payment. A dedicated trusted payment-verification backend must be added before enabling donations or allowing transaction/raised-total writes.
-
-## Production readiness notes
-
-This project is currently a strong prototype and needs the following before release:
-
-- centralized app architecture and state management
-- stricter validation and error handling
-- automated widget and integration tests
-- production Firebase rules and access control
-- release configuration for Android and iOS
-- improved code cleanup and security review
-
-## Suggested next steps
-
-- refactor repeated login flows into shared widgets/services
-- move Firebase logic out of UI classes
-- add tests for the core donation flow
-- add a trusted payment-verification backend before re-enabling donations
+- Move Firebase operations out of page widgets into services or repositories.
+- Create shared authentication and validation components.
+- Replace loosely typed lists and maps with typed models.
+- Use a consistent naming convention for files and classes.
+- Add automated tests for every major user role and failure path.
+- Keep payment verification and administrator operations on trusted backend
+  services.
