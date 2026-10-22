@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +6,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'model/Donor_model.dart';
 
 class Login_Page extends StatefulWidget {
-
   const Login_Page({Key? key}) : super(key: key);
 
   @override
@@ -15,86 +13,93 @@ class Login_Page extends StatefulWidget {
 }
 
 class _Login_PageState extends State<Login_Page> {
-  bool _passwordVisible=false;
-  final _auth=FirebaseAuth.instance;
-  String email="";
-  String password="";
-  bool showspinner=false;
+  bool _passwordVisible = false;
+  final _auth = FirebaseAuth.instance;
+  String email = "";
+  String password = "";
+  bool showspinner = false;
   static const String logo = 'assets/images/siksha_logo.svg';
-  bool isChecked=false;
-  List donerProfile=[];
+  bool isChecked = false;
+  List donerProfile = [];
 
-  Future<List> getDonor(String em)async{
-    dynamic resultant=await DonorModel().getDoner(em);
-    if(resultant==null){
+  Future<List> getDonor(String em) async {
+    final resultant = await DonorModel().getDoner(em);
+    if (resultant == null) {
       print("unable to retrieve");
-    }
-    else{
-      setState((){
-        donerProfile=resultant;
+    } else {
+      if (!mounted) {
+        return List<dynamic>.from(resultant);
+      }
+      setState(() {
+        donerProfile = resultant;
       });
     }
-    return donerProfile;
+    return resultant == null ? <dynamic>[] : List<dynamic>.from(resultant);
   }
+
   @override
   Widget build(BuildContext context) {
-    final size=MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      body:  ModalProgressHUD (
+      body: ModalProgressHUD(
         inAsyncCall: showspinner,
-        child:SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               SizedBox(height: size.height*0.02,),
+              SizedBox(
+                height: size.height * 0.02,
+              ),
               Center(
                 child: SvgPicture.asset(
                   logo,
-                  width: size.width*0.4,
-                  height: size.height*0.4,
+                  width: size.width * 0.4,
+                  height: size.height * 0.4,
                   semanticsLabel: 'Logo',
                 ),
               ),
               const Center(
-                child: Text("Donor Login",style: bigTextGreenHeading
-                ),
+                child: Text("Donor Login", style: bigTextGreenHeading),
               ),
               Padding(
-                padding:  EdgeInsets.all(size.width*0.1),
+                padding: EdgeInsets.all(size.width * 0.1),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Email", style: textLimeheading),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     TextField(
-                      onChanged: (value){
-                        email=value;
+                      onChanged: (value) {
+                        email = value;
                       },
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         hintText: 'Enter your Email',
-                        hintStyle:const TextStyle(color: Colors.green),
+                        hintStyle: const TextStyle(color: Colors.green),
                         contentPadding: const EdgeInsets.all(15),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30)
-                        ),
-                        fillColor:  const Color(0xFFFFE9EF),
+                            borderRadius: BorderRadius.circular(30)),
+                        fillColor: const Color(0xFFFFE9EF),
                         filled: true,
                       ),
                       style: const TextStyle(
                         color: Colors.green,
                       ),
                     ),
-                    const SizedBox(height: 10,
+                    const SizedBox(
+                      height: 10,
                     ),
                     const Text("Password", style: textLimeheading),
-                    const SizedBox(height: 10,
+                    const SizedBox(
+                      height: 10,
                     ),
                     TextField(
-                      onChanged: (value){
-                        password=value;
+                      onChanged: (value) {
+                        password = value;
                       },
                       textAlign: TextAlign.center,
                       obscureText: !_passwordVisible,
@@ -107,19 +112,17 @@ class _Login_PageState extends State<Login_Page> {
                             color: Theme.of(context).primaryColorDark,
                           ),
                           onPressed: () {
-
                             setState(() {
                               _passwordVisible = !_passwordVisible;
                             });
                           },
                         ),
                         hintText: '            Enter your Password',
-                        hintStyle:const TextStyle(color: Colors.green),
+                        hintStyle: const TextStyle(color: Colors.green),
                         contentPadding: const EdgeInsets.all(15),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30)
-                        ),
-                        fillColor:  const Color(0xFFFFE9EF),
+                            borderRadius: BorderRadius.circular(30)),
+                        fillColor: const Color(0xFFFFE9EF),
                         filled: true,
                       ),
                       style: const TextStyle(
@@ -127,12 +130,14 @@ class _Login_PageState extends State<Login_Page> {
                       ),
                     ),
                     Row(
-                      children:  [
+                      children: [
                         const CheckB(),
                         const Text("Remember Me"),
-                        SizedBox(width: size.width*0.11,),
+                        SizedBox(
+                          width: size.width * 0.11,
+                        ),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             Navigator.pushNamed(context, '/forgot-pass');
                           },
                           child: const Text("Forgot Password"),
@@ -140,37 +145,39 @@ class _Login_PageState extends State<Login_Page> {
                       ],
                     ),
                     Center(
-                      child:ElevatedButton(onPressed: () async{
-                        setState((){
-                          showspinner=true;
-                        });
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            showspinner = true;
+                          });
 
-                        try{
-                          final user=await _auth.signInWithEmailAndPassword(email: email, password: password);
-                          if(user!=null ) {
-                            await getDonor(email);
-                            if(donerProfile.length==1){
+                          try {
+                            await _auth.signInWithEmailAndPassword(
+                                email: email, password: password);
+                            final donor = await getDonor(email);
+                            if (donor.length == 1 && mounted) {
                               Navigator.pushNamed(context, '/d-home');
-                            }
-                            else{
+                            } else {
                               throw Exception("Login Failed");
                             }
+                          } catch (error) {
+                            debugPrint(error.toString());
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      "Please enter correct id and password"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
                           }
-                        }
-                        catch (error) {
-                          print(error);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please enter correct id and password"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                        setState((){
-                          showspinner=false;
-                        });
-
-                      },
+                          if (mounted) {
+                            setState(() {
+                              showspinner = false;
+                            });
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFFFE9EF),
                           shape: RoundedRectangleBorder(
@@ -179,7 +186,8 @@ class _Login_PageState extends State<Login_Page> {
                         ),
                         child: const Padding(
                           padding: EdgeInsets.all(10),
-                          child:  Text('Login',
+                          child: Text(
+                            'Login',
                             style: TextStyle(
                               color: Colors.green,
                               fontSize: 20,
@@ -188,12 +196,14 @@ class _Login_PageState extends State<Login_Page> {
                         ),
                       ),
                     ),
-                    SizedBox(height: size.height*0.02,),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
                     Center(
-                      child:ElevatedButton(onPressed: () async{
-
-                            Navigator.pushNamed(context, '/d-registration');
-                      },
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Navigator.pushNamed(context, '/d-registration');
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFFFE9EF),
                           shape: RoundedRectangleBorder(
@@ -202,7 +212,8 @@ class _Login_PageState extends State<Login_Page> {
                         ),
                         child: const Padding(
                           padding: EdgeInsets.all(10),
-                          child:  Text('Register',
+                          child: Text(
+                            'Register',
                             style: TextStyle(
                               color: Colors.green,
                               fontSize: 20,
@@ -214,7 +225,6 @@ class _Login_PageState extends State<Login_Page> {
                   ],
                 ),
               ),
-
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
@@ -232,9 +242,7 @@ class _Login_PageState extends State<Login_Page> {
   }
 }
 
-
 class CheckB extends StatefulWidget {
-
   const CheckB({Key? key}) : super(key: key);
 
   @override
@@ -242,7 +250,7 @@ class CheckB extends StatefulWidget {
 }
 
 class _CheckBState extends State<CheckB> {
-  bool isChecked=false;
+  bool isChecked = false;
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -256,10 +264,10 @@ class _CheckBState extends State<CheckB> {
       }
       return Colors.lime;
     }
+
     return Checkbox(
       checkColor: Colors.white,
       fillColor: MaterialStateProperty.resolveWith(getColor),
-
       value: isChecked,
       onChanged: (bool? value) {
         setState(() {
@@ -269,4 +277,3 @@ class _CheckBState extends State<CheckB> {
     );
   }
 }
-

@@ -10,20 +10,20 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 import 'package:siksha_anudan/StudentHome_Page.dart';
 import 'package:siksha_anudan/model/Student_model.dart';
 
-class Registration_Student extends StatefulWidget {
-  const Registration_Student({Key? key}) : super(key: key);
+class RegistrationStudent extends StatefulWidget {
+  const RegistrationStudent({Key? key}) : super(key: key);
 
   @override
-  State<Registration_Student> createState() => _Registration_Student();
+  State<RegistrationStudent> createState() => _RegistrationStudent();
 }
 
-class _Registration_Student extends State<Registration_Student> {
-  final _formKey = GlobalKey<FormState>();
+class _RegistrationStudent extends State<RegistrationStudent> {
+  static const _useTestData = bool.fromEnvironment('USE_TEST_DATA');
+  final _basicInfoFormKey = GlobalKey<FormState>();
+  final _educationFormKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -31,20 +31,20 @@ class _Registration_Student extends State<Registration_Student> {
   final TextEditingController _address = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _aadharC = TextEditingController();
-  final TextEditingController _pan=TextEditingController();
+  final TextEditingController _pan = TextEditingController();
   final TextEditingController highschoolcollegename = TextEditingController();
   final TextEditingController highschoolboard = TextEditingController();
   final TextEditingController highschoolpercent = TextEditingController();
   final TextEditingController intermediatecollegename = TextEditingController();
   final TextEditingController intermediateboard = TextEditingController();
   final TextEditingController intermediatepercent = TextEditingController();
-  final TextEditingController degappfor=TextEditingController();
-  final TextEditingController amountreq=TextEditingController();
-  final TextEditingController income=TextEditingController();
+  final TextEditingController degappfor = TextEditingController();
+  final TextEditingController amountreq = TextEditingController();
+  final TextEditingController income = TextEditingController();
 
-  String? _dayvalue = '';
-  String? _monvalue = '';
-  String? _yearvalue = '';
+  String? _dayvalue = _useTestData ? '1' : '';
+  String? _monvalue = _useTestData ? '1' : '';
+  String? _yearvalue = _useTestData ? '2000' : '';
   String? photourl = "";
   String? signurl = "";
   String? aadharurl = "";
@@ -55,55 +55,53 @@ class _Registration_Student extends State<Registration_Student> {
   bool _isLoading = false;
   Future getPhoto(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source,imageQuality: 70);
+      final image =
+          await ImagePicker().pickImage(source: source, imageQuality: 70);
       if (image == null) return;
       //final imageTemporary = File(image.path);
       final imagePermanent = File(image.path);
 
       setState(() {
-        this._photo = imagePermanent;
+        _photo = imagePermanent;
       });
+      debugPrint('Selected student photo: ${imagePermanent.path}');
     } on PlatformException catch (e) {
-      print('Failed to pick image:$e');
+      debugPrint('Failed to pick image: $e');
     }
   }
 
   Future getSignature(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source,imageQuality: 70);
+      final image =
+          await ImagePicker().pickImage(source: source, imageQuality: 70);
       if (image == null) return;
       //final imageTemporary = File(image.path);
       final imagePermanent = File(image.path);
 
       setState(() {
-        this._signature = imagePermanent;
+        _signature = imagePermanent;
       });
+      debugPrint('Selected student bonafide: ${imagePermanent.path}');
     } on PlatformException catch (e) {
-      print('Failed to pick image:$e');
+      debugPrint('Failed to pick image: $e');
     }
   }
 
   Future getsop(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source,imageQuality: 70);
+      final image =
+          await ImagePicker().pickImage(source: source, imageQuality: 70);
       if (image == null) return;
       //final imageTemporary = File(image.path);
       final imagePermanent = File(image.path);
 
       setState(() {
-        this._aadhar = imagePermanent;
+        _aadhar = imagePermanent;
       });
+      debugPrint('Selected student SOP: ${imagePermanent.path}');
     } on PlatformException catch (e) {
-      print('Failed to pick image:$e');
+      debugPrint('Failed to pick image: $e');
     }
-  }
-
-  Future<File> saveFilePermanentely(String imagePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final name = basename(imagePath);
-    final image = File('${directory.path}/$name');
-
-    return File(imagePath).copy(image.path);
   }
 
   @override
@@ -113,22 +111,23 @@ class _Registration_Student extends State<Registration_Student> {
         title: 'Basic Information',
         subtitle: 'Please fill some of the basic information to get started',
         content: Form(
-          key: _formKey,
+          key: _basicInfoFormKey,
           child: Column(
             children: [
               _buildTextField(
+                fieldKey: const ValueKey('registration-name'),
                 labelText: 'Name',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Name is required';
                   }
-                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value ?? '')) {
                     return "Invalid(Special Character are not allowed)";
                   }
-                  if (value.length < 3) {
+                  if ((value ?? '').length < 3) {
                     return "Cannot be shorter than 3 Character";
                   }
-                  if (value.length > 30) {
+                  if ((value ?? '').length > 30) {
                     return "Cannot be larger than 15 Character";
                   } else {
                     return null;
@@ -137,14 +136,15 @@ class _Registration_Student extends State<Registration_Student> {
                 controller: _name,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-email'),
                 labelText: 'Email Address',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Email address is required';
                   }
                   if (!RegExp(
-                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                      .hasMatch(value!)) {
+                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                      .hasMatch(value ?? '')) {
                     return "Invalid Email Id";
                   } else {
                     return null;
@@ -153,37 +153,38 @@ class _Registration_Student extends State<Registration_Student> {
                 controller: _email,
               ),
               _buildNumberField(
+                fieldKey: const ValueKey('registration-phone'),
                 //keyboardType:TextInputType.phone,
                 labelText: 'Phone Number',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Phone Number is required';
                   }
-                  if (value.length != 10) {
+                  if ((value ?? '').length != 10) {
                     return "Please enter valid phone number";
-                  }
-                  else {
+                  } else {
                     return null;
                   }
                 },
                 controller: _phonenum,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-address'),
                 //keyboardType:TextInputType.phone,
                 labelText: 'Address',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Address is required';
                   }
-                  if (!RegExp(r'[a-zA-Z\-0-9]+$').hasMatch(value!) &&
+                  if (!RegExp(r'[a-zA-Z\-0-9]+$').hasMatch(value ?? '') &&
                       !RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
-                          .hasMatch(value!)) {
+                          .hasMatch(value ?? '')) {
                     return "Invalid Address";
                   }
-                  if (value.length < 3) {
+                  if ((value ?? '').length < 3) {
                     return "Cannot be shorter than 3 Character";
                   }
-                  if (value.length > 30) {
+                  if ((value ?? '').length > 30) {
                     return "Cannot be larger than 30 Character";
                   } else {
                     return null;
@@ -192,15 +193,16 @@ class _Registration_Student extends State<Registration_Student> {
                 controller: _address,
               ),
               _buildNumberField(
+                fieldKey: const ValueKey('registration-aadhaar'),
                 labelText: 'Enter Aadhar Number',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Aadhar is required';
                   }
-                  if (value.length < 11) {
+                  if ((value ?? '').length < 11) {
                     return "Too Short";
                   }
-                  if (value.length > 12) {
+                  if ((value ?? '').length > 12) {
                     return "Too long";
                   } else {
                     return null;
@@ -213,21 +215,22 @@ class _Registration_Student extends State<Registration_Student> {
                 height: 12,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-pan'),
                 //keyboardType:TextInputType.phone,
                 labelText: 'PAN Number',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'PAN Number is required';
                   }
-                  if (!RegExp(r'[a-zA-Z\-0-9]+$').hasMatch(value!) &&
+                  if (!RegExp(r'[a-zA-Z\-0-9]+$').hasMatch(value ?? '') &&
                       !RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$')
-                          .hasMatch(value!)) {
+                          .hasMatch(value ?? '')) {
                     return "Invalid Address";
                   }
-                  if (value.length < 3) {
+                  if ((value ?? '').length < 3) {
                     return "Cannot be shorter than 3 Character";
                   }
-                  if (value.length > 10) {
+                  if ((value ?? '').length > 10) {
                     return "Cannot be larger than 15 Character";
                   } else {
                     return null;
@@ -247,38 +250,48 @@ class _Registration_Student extends State<Registration_Student> {
               const SizedBox(
                 height: 8,
               ),
-              DropdownDatePicker(
-                boxDecoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
-                  borderRadius: BorderRadius.circular(5),
-                ), // optional
-                isDropdownHideUnderline: true, // optional
-                isFormValidator: true, // optional
-                startYear: 1950, // optional
-                endYear: 2020, // optional
-                width: 10, // optional
-                // onChangedDay: (_dayvalue) => print('onChangedDay: $_dayvalue'),
-                //  onChangedMonth: (_monvalue) => print('onChangedMonth: $_monvalue'),
-                //  onChangedYear: (_yearvalue) => print('onChangedYear: $_yearvalue'),
-                onChangedDay: (value) => {
-                  _dayvalue = value,
-                  print('onChangedDay: $value'),
-                },
+              Semantics(
+                label: 'registration-date-of-birth',
+                child: KeyedSubtree(
+                  key: const ValueKey('registration-date-of-birth'),
+                  child: DropdownDatePicker(
+                    boxDecoration: BoxDecoration(
+                      border: Border.all(color: Colors.green),
+                      borderRadius: BorderRadius.circular(5),
+                    ), // optional
+                    isDropdownHideUnderline: true, // optional
+                    isFormValidator: true, // optional
+                    startYear: 1950, // optional
+                    endYear: 2020, // optional
+                    selectedDay: _useTestData ? 1 : null,
+                    selectedMonth: _useTestData ? 1 : null,
+                    selectedYear: _useTestData ? 2000 : null,
+                    width: 10, // optional
+                    // onChangedDay: (_dayvalue) => print('onChangedDay: $_dayvalue'),
+                    //  onChangedMonth: (_monvalue) => print('onChangedMonth: $_monvalue'),
+                    //  onChangedYear: (_yearvalue) => print('onChangedYear: $_yearvalue'),
+                    onChangedDay: (value) => {
+                      _dayvalue = value,
+                      debugPrint('onChangedDay: $value'),
+                    },
 
-                onChangedMonth: (value) => {
-                  _monvalue = value,
-                  print('onChangedMonth: $value'),
-                },
+                    onChangedMonth: (value) => {
+                      _monvalue = value,
+                      debugPrint('onChangedMonth: $value'),
+                    },
 
-                onChangedYear: (value) => {
-                  _yearvalue = value,
-                  print('onChangedYear: $value'),
-                },
+                    onChangedYear: (value) => {
+                      _yearvalue = value,
+                      debugPrint('onChangedYear: $value'),
+                    },
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 32,
               ),
               Container(
+                key: const ValueKey('registration-degree'),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: Colors.grey),
@@ -290,51 +303,69 @@ class _Registration_Student extends State<Registration_Student> {
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                   ),
-                  items: const ['B.A','B.Arch','B.C.A','B.Com', 'B.Sc','B.Tech','M.B.A','M.C.A','M.Tech'],
+                  items: const [
+                    'B.A',
+                    'B.Arch',
+                    'B.C.A',
+                    'B.Com',
+                    'B.Sc',
+                    'B.Tech',
+                    'M.B.A',
+                    'M.C.A',
+                    'M.Tech'
+                  ],
                   controller: degappfor,
                 ),
               ),
               const SizedBox(
                 height: 12,
               ),
-              CustomDropdown(
-                // fillColor: Colors.alabaster,
-                borderRadius: BorderRadius.circular(5),
-                hintText: "Family Income",
-                hintStyle: TextStyle(
-                  color: Colors.grey[500],
+              KeyedSubtree(
+                key: const ValueKey('registration-family-income'),
+                child: CustomDropdown(
+                  // fillColor: Colors.alabaster,
+                  borderRadius: BorderRadius.circular(5),
+                  hintText: "Family Income",
+                  hintStyle: TextStyle(
+                    color: Colors.grey[500],
+                  ),
+                  items: const [
+                    "Below 1,00,000",
+                    "1,00,000 - 3,00,000",
+                    "4,00,000 - 7,00,000",
+                    "7,00,000 - 10,00,000"
+                  ],
+                  controller: income,
                 ),
-                items: const ["Below 1,00,000",
-                  "1,00,000 - 3,00,000",
-                  "4,00,000 - 7,00,000",
-                  "7,00,000 - 10,00,000"],
-                controller: income,
               ),
-              const SizedBox(height: 12,),
+              const SizedBox(
+                height: 12,
+              ),
               _buildNumberField(
+                fieldKey: const ValueKey('registration-amount'),
                 //keyboardType:TextInputType.phone,
                 labelText: 'Amount required for Donation',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Required';
-                  }
-                   else {
+                  } else {
                     return null;
                   }
                 },
                 controller: amountreq,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-password'),
                 //keyboardType:TextInputType.phone,
                 labelText: 'Enter Password',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Password is required';
                   }
-                  if (value.length < 3) {
+                  if ((value ?? '').length < 3) {
                     return "Too Short";
                   }
-                  if (value.length > 15) {
+                  if ((value ?? '').length > 15) {
                     return "Too long";
                   } else {
                     return null;
@@ -347,7 +378,7 @@ class _Registration_Student extends State<Registration_Student> {
           ),
         ),
         validation: () {
-          if (!_formKey.currentState!.validate()) {
+          if (!_basicInfoFormKey.currentState!.validate()) {
             return 'Fill form correctly';
           }
           return null;
@@ -357,33 +388,32 @@ class _Registration_Student extends State<Registration_Student> {
         title: 'Educational Qualification',
         subtitle: 'Enter you education you have been done so far',
         content: Form(
-          key: _formKey,
+          key: _educationFormKey,
           child: Column(
             children: [
-              Container(
-                child: const Text(
-                  "High School Details",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+              const Text(
+                "High School Details",
+                style: TextStyle(
+                  color: Colors.grey,
                 ),
               ),
               const SizedBox(
                 height: 5,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-high-school-name'),
                 labelText: 'School Name',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'School Name is required';
                   }
-                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value ?? '')) {
                     return "Invalid(Special Character are not allowed)";
                   }
-                  if (value.length < 5) {
+                  if ((value ?? '').length < 5) {
                     return "Cannot be shorter than 5 Character";
                   }
-                  if (value.length > 30) {
+                  if ((value ?? '').length > 30) {
                     return "Cannot be larger than 30 Character";
                   } else {
                     return null;
@@ -395,6 +425,7 @@ class _Registration_Student extends State<Registration_Student> {
                 height: 8,
               ),
               Container(
+                key: const ValueKey('registration-high-school-board'),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: Colors.grey),
@@ -414,22 +445,21 @@ class _Registration_Student extends State<Registration_Student> {
                 height: 8,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-high-school-percent'),
                 labelText: 'Percent',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Percent is required';
                   }
-                  // if (!RegExp(r'^(\d+|\d*[.]\d+)%?$').hasMatch(value!)) {
+                  // if (!RegExp(r'^(\d+|\d*[.]\d+)%?$').hasMatch(value ?? '')) {
                   //   return "Invalid(Special Character are not allowed)";
                   // }
-                  if (value.length != 2) {
+                  if ((value ?? '').length != 2) {
                     return 'Invalid Percentage';
                   }
-                  if (!RegExp(r'^\d+([.]\d+)?%?$')
-                      .hasMatch(value!)) {
+                  if (!RegExp(r'^\d+([.]\d+)?%?$').hasMatch(value ?? '')) {
                     return "Percent cannot have Special Character/Alphabet";
-                  }
-                  else {
+                  } else {
                     return null;
                   }
                 },
@@ -438,30 +468,29 @@ class _Registration_Student extends State<Registration_Student> {
               const SizedBox(
                 height: 12,
               ),
-              Container(
-                child: const Text(
-                  "Intermediate Details",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+              const Text(
+                "Intermediate Details",
+                style: TextStyle(
+                  color: Colors.grey,
                 ),
               ),
               const SizedBox(
                 height: 5,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-intermediate-name'),
                 labelText: 'School Name',
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'School Name is required';
                   }
-                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value!)) {
+                  if (!RegExp(r'[a-z A-Z]+$').hasMatch(value ?? '')) {
                     return "Invalid(Special Character are not allowed)";
                   }
-                  if (value.length < 5) {
+                  if ((value ?? '').length < 5) {
                     return "Cannot be shorter than 5 Character";
                   }
-                  if (value.length > 30) {
+                  if ((value ?? '').length > 30) {
                     return "Cannot be larger than 30 Character";
                   } else {
                     return null;
@@ -473,6 +502,7 @@ class _Registration_Student extends State<Registration_Student> {
                 height: 8,
               ),
               Container(
+                key: const ValueKey('registration-intermediate-board'),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: Colors.grey),
@@ -492,23 +522,21 @@ class _Registration_Student extends State<Registration_Student> {
                 height: 8,
               ),
               _buildTextField(
+                fieldKey: const ValueKey('registration-intermediate-percent'),
                 labelText: 'Percent',
-
                 validator: (value) {
-                  if (value!.isEmpty) {
+                  if ((value ?? '').isEmpty) {
                     return 'Percent is required';
                   }
-                  // if (!RegExp(r'^(\d+|\d*[.]\d+)%?$').hasMatch(value!)) {
+                  // if (!RegExp(r'^(\d+|\d*[.]\d+)%?$').hasMatch(value ?? '')) {
                   //   return "Invalid(Special Character are not allowed)";
                   // }
-                  if (value.length != 2) {
+                  if ((value ?? '').length != 2) {
                     return 'Invalid Percentage';
                   }
-                  if (!RegExp(r'^\d+([.]\d+)?%?$')
-                      .hasMatch(value!)) {
+                  if (!RegExp(r'^\d+([.]\d+)?%?$').hasMatch(value ?? '')) {
                     return "Percent cannot have Special Character/Alphabet";
-                  }
-                  else {
+                  } else {
                     return null;
                   }
                 },
@@ -518,7 +546,7 @@ class _Registration_Student extends State<Registration_Student> {
           ),
         ),
         validation: () {
-          if (!_formKey.currentState!.validate()) {
+          if (!_educationFormKey.currentState!.validate()) {
             return 'Fill form correctly';
           }
           return null;
@@ -529,68 +557,72 @@ class _Registration_Student extends State<Registration_Student> {
           subtitle: 'To verify the identity of yours',
           content: Center(
               child: Column(
-                children: [
-                  CustomButton(
-                    title: 'Upload Photograph',
-                    icon: Icons.image_outlined,
-                    onClick: () => getPhoto(ImageSource.gallery),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  //'assets/images/siksha_logo.svg'
-                  _photo != null
-                      ? Image.file(_photo!,
+            children: [
+              customButton(
+                buttonKey: const ValueKey('registration-upload-photo'),
+                title: 'Upload Photograph',
+                icon: Icons.image_outlined,
+                onClick: () => getPhoto(ImageSource.gallery),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              //'assets/images/siksha_logo.svg'
+              _photo != null
+                  ? Image.file(_photo!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.asset('assets/images/default-placeholder-image.png'),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  CustomButton(
-                    title: 'Upload Bonafide Certificate',
-                    icon: Icons.image_outlined,
-                    onClick: () => getSignature(ImageSource.gallery),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _signature != null
-                      ? Image.file(_signature!,
+                  : Image.asset('assets/images/default-placeholder-image.png'),
+              const SizedBox(
+                height: 40,
+              ),
+              customButton(
+                buttonKey: const ValueKey('registration-upload-bonafide'),
+                title: 'Upload Bonafide Certificate',
+                icon: Icons.image_outlined,
+                onClick: () => getSignature(ImageSource.gallery),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              _signature != null
+                  ? Image.file(_signature!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.asset('assets/images/default-placeholder-image.png'),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  CustomButton(
-                    title: 'Upload SOP',
-                    icon: Icons.image_outlined,
-                    onClick: () => getsop(ImageSource.gallery),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _aadhar != null
-                      ? Image.file(_aadhar!,
+                  : Image.asset('assets/images/default-placeholder-image.png'),
+              const SizedBox(
+                height: 40,
+              ),
+              customButton(
+                buttonKey: const ValueKey('registration-upload-sop'),
+                title: 'Upload SOP',
+                icon: Icons.image_outlined,
+                onClick: () => getsop(ImageSource.gallery),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              _aadhar != null
+                  ? Image.file(_aadhar!,
                       width: 250, height: 250, fit: BoxFit.cover)
-                      : Image.asset('assets/images/default-placeholder-image.png'),
-                ],
-              )),
-          validation: () {}),
+                  : Image.asset('assets/images/default-placeholder-image.png'),
+            ],
+          )),
+          validation: () => null),
       CoolStep(
           title: 'Confirmation',
           subtitle:
-          'Recheck the entries you have made. You can change some of them in future',
+              'Recheck the entries you have made. You can change some of them in future',
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Center(
                   child: ClipOval(
-                    child: _photo != null
-                        ? Image.file(_photo!,
+                child: _photo != null
+                    ? Image.file(_photo!,
                         width: 250, height: 250, fit: BoxFit.cover)
-                        :Image.asset('assets/images/default-placeholder-image.png'),
-                  )),
+                    : Image.asset(
+                        'assets/images/default-placeholder-image.png'),
+              )),
               const SizedBox(
                 height: 40,
               ),
@@ -600,22 +632,20 @@ class _Registration_Student extends State<Registration_Student> {
                 value: _name.text,
                 a: 94,
               ),
-              Container(
-                child: Row(
-                  children: [
-                    const Text(
-                      'Date of Birth',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      width: 51,
-                    ),
-                    Text(
-                      '$_dayvalue/$_monvalue/$_yearvalue',
-                      style: const TextStyle(fontWeight: FontWeight.w300),
-                    ),
-                  ],
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Date of Birth',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 51,
+                  ),
+                  Text(
+                    '$_dayvalue/$_monvalue/$_yearvalue',
+                    style: const TextStyle(fontWeight: FontWeight.w300),
+                  ),
+                ],
               ),
 
               apperance(
@@ -644,20 +674,23 @@ class _Registration_Student extends State<Registration_Student> {
               const SizedBox(
                 height: 40,
               ),
-              Center(
-                child: Container(
-                  child:const Text("High School Details",style: TextStyle(
+              const Center(
+                child: Text(
+                  "High School Details",
+                  style: TextStyle(
                     color: Colors.grey,
-                  ),),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               //Text('School Name     ${highschoolcollegename.text}'),
               apperance(
                 title: 'School Name',
                 value: highschoolcollegename.text,
                 // a: 88,
-                a:47,
+                a: 47,
               ),
               //Text('Board    ${highschoolboard.text}'),
               apperance(
@@ -669,18 +702,23 @@ class _Registration_Student extends State<Registration_Student> {
               apperance(
                 title: 'Percent',
                 value: highschoolpercent.text,
-                a: 125-44,
+                a: 125 - 44,
               ),
-              const SizedBox(height: 30,),
-              Center(
-                child: Container(
-                  child:const Text("Intermediate Details",style: TextStyle(
+              const SizedBox(
+                height: 30,
+              ),
+              const Center(
+                child: Text(
+                  "Intermediate Details",
+                  style: TextStyle(
                     color: Colors.grey,
-                  ),),
+                  ),
                 ),
               ),
               //Text('School Name    : ${intermediatecollegename.text}'),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               apperance(
                 title: 'School Name',
                 value: intermediatecollegename.text,
@@ -690,33 +728,35 @@ class _Registration_Student extends State<Registration_Student> {
               apperance(
                 title: 'Board',
                 value: intermediateboard.text,
-                a: 134-43,
+                a: 134 - 43,
               ),
               //Text('Percent    : ${intermediatepercent.text}'),
               apperance(
                 title: 'Percent',
                 value: intermediatepercent.text,
-                a: 125-43,
+                a: 125 - 43,
               ),
-              const SizedBox(height: 30,),
+              const SizedBox(
+                height: 30,
+              ),
               Center(
                 child: _signature != null
                     ? Image.file(_signature!,
-                    width: 300, height: 150, fit: BoxFit.cover)
-                    : Image.asset('assets/images/default-placeholder-image.png'),
+                        width: 300, height: 150, fit: BoxFit.cover)
+                    : Image.asset(
+                        'assets/images/default-placeholder-image.png'),
               ),
             ],
           ),
-          validation: () {}),
+          validation: () => null),
     ];
 
     final stepper = CoolStepper(
       showErrorSnackbar: false,
-      onCompleted: () {
+      onCompleted: () async {
         Fluttertoast.showToast(msg: 'Registered successfully');
-        signUp(_email.text, _password.text);
-        print('Steps completed!');
-
+        await signUp(_email.text, _password.text);
+        debugPrint('Steps completed!');
       },
       steps: steps,
       config: const CoolStepperConfig(
@@ -746,12 +786,12 @@ class _Registration_Student extends State<Registration_Student> {
             Expanded(child: stepper),
           ],
         ),
-
       ),
     );
   }
 
   Widget _buildTextField({
+    Key? fieldKey,
     String? labelText,
     FormFieldValidator<String>? validator,
     TextEditingController? controller,
@@ -759,38 +799,46 @@ class _Registration_Student extends State<Registration_Student> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: TextFormField(
+        key: fieldKey,
         decoration: InputDecoration(
           labelText: labelText,
         ),
-        validator: validator,
-        controller: controller,
-      ),
-    );
-  }
-  Widget _buildNumberField({
-    String? labelText,
-    FormFieldValidator<String>? validator,
-    TextEditingController? controller,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        decoration: InputDecoration(
-          labelText: labelText,
-        ),
-        keyboardType: TextInputType.number,
+        scrollPadding: const EdgeInsets.only(bottom: 180),
         validator: validator,
         controller: controller,
       ),
     );
   }
 
-  Widget CustomButton({
+  Widget _buildNumberField({
+    Key? fieldKey,
+    String? labelText,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: TextFormField(
+        key: fieldKey,
+        decoration: InputDecoration(
+          labelText: labelText,
+        ),
+        keyboardType: TextInputType.number,
+        scrollPadding: const EdgeInsets.only(bottom: 180),
+        validator: validator,
+        controller: controller,
+      ),
+    );
+  }
+
+  Widget customButton({
+    Key? buttonKey,
     required String title,
     required IconData icon,
     required VoidCallback onClick,
   }) {
-    return Container(
+    return SizedBox(
+      key: buttonKey,
       width: 280,
       child: ElevatedButton(
         onPressed: onClick,
@@ -812,111 +860,131 @@ class _Registration_Student extends State<Registration_Student> {
     required String value,
     required double a,
   }) {
-    return Container(
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w900),
-          ),
-          SizedBox(
-            width: a,
-          ),
-          Text(
+    return Row(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w900),
+        ),
+        SizedBox(
+          width: a,
+        ),
+        Expanded(
+          child: Text(
             value,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontWeight: FontWeight.w300),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  void signUp(String email, String password) async {
-      try {
-        setState(() {
-          _isLoading = true;
-        });
-        dob = "${_dayvalue!}/${_monvalue!}/${_yearvalue!}";
-        if(_photo == null){
-          Fluttertoast.showToast(msg: "Please upload Profile picture");
+  Future<void> signUp(String email, String password) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      if (_photo == null || _signature == null || _aadhar == null) {
+        debugPrint(
+          'Registration blocked: photo=${_photo != null}, '
+          'bonafide=${_signature != null}, sop=${_aadhar != null}',
+        );
+        Fluttertoast.showToast(msg: "Please upload all required documents");
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
         }
-        else{
-          final ref = FirebaseStorage.instance
-              .ref()
-              .child("StudentDocs")
-              .child(_aadharC.text + '_photo' + '.jpg');
-          await ref.putFile(_photo!);
-          photourl = await ref.getDownloadURL();
-        }
-        if(_signature == null){
-          Fluttertoast.showToast(msg: "Please upload Signature");
-        }
-        else{
+        return;
+      }
 
-          final ref = FirebaseStorage.instance
-              .ref()
-              .child("StudentDocs")
-              .child(_aadharC.text + '_sign' + '.jpg');
-          await ref.putFile(_signature!);
-          signurl = await ref.getDownloadURL();
-        }
-        if(_aadhar == null){
-          Fluttertoast.showToast(msg: "Please upload Aadhar photo");
-        }
-        else{
+      dob = "$_dayvalue/$_monvalue/$_yearvalue";
+      debugPrint('Creating emulator registration for $email');
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      final uid = credential.user!.uid;
+      final storage = FirebaseStorage.instance.ref();
 
-          final ref = FirebaseStorage.instance
-              .ref()
-              .child("StudentDocs")
-              .child(_aadharC.text + '_aadhar' + '.jpg');
-          await ref.putFile(_aadhar!);
-          aadharurl = await ref.getDownloadURL();
-        }
+      final photoRef = storage.child("studentPhotos/$uid/profile.jpg");
+      final imageMetadata = SettableMetadata(contentType: 'image/png');
+      await photoRef.putFile(_photo!, imageMetadata);
+      photourl = await photoRef.getDownloadURL();
 
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-        postDetailsToFirestore();
+      final signatureRef = storage.child("studentDocuments/$uid/signature.jpg");
+      await signatureRef.putFile(_signature!, imageMetadata);
+      signurl = signatureRef.fullPath;
+
+      final identityRef =
+          storage.child("studentDocuments/$uid/identity-document.jpg");
+      await identityRef.putFile(_aadhar!, imageMetadata);
+      aadharurl = identityRef.fullPath;
+
+      await postDetailsToFirestore();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      }
-      if (e.code == 'email-already-in-use') {
-        Fluttertoast.showToast(msg: 'The account already exists for that email.');
-        print('The account already exists for that email.');
+        Fluttertoast.showToast(msg: 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(
+            msg: 'The account already exists for that email.');
+      } else {
+        Fluttertoast.showToast(msg: 'Registration failed. Please try again.');
       }
     } catch (e) {
-      print(e);
-    }
-    finally {
+      debugPrint(e.toString());
+      Fluttertoast.showToast(msg: 'Registration failed. Please try again.');
+    } finally {
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
       }
+    }
   }
 
-  postDetailsToFirestore() async{
-    //calling our firestore
-    //calling our model
-    //sending these values
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = auth.currentUser;
-    StudentModel studentModel = StudentModel(amountReq: int.parse(amountreq.text),amountRec: 0,email: user!.email,uid: user.uid,
-    name:_name.text,phonenum: _phonenum.text,address: _address.text,aadharC: _aadharC.text,aadharurl:  aadharurl,appFor: degappfor.text,
-    highschoolboard: highschoolboard.text,highschoolcollegename: highschoolcollegename.text,highschoolpercent:  highschoolpercent.text,
-        intermediatecollegename: intermediatecollegename.text,intermediateboard: intermediateboard.text,intermediatepercent: intermediatepercent.text,
-      photourl: photourl,signurl:signurl,dob:  dob,status: "pending",income: income.text);
+  Future<void> postDetailsToFirestore() async {
+    final user = auth.currentUser!;
+    final studentModel = StudentModel(
+      amountReq: int.parse(amountreq.text),
+      amountRec: 0,
+      email: user.email,
+      uid: user.uid,
+      name: _name.text,
+      phonenum: _phonenum.text,
+      address: _address.text,
+      aadharC: _aadharC.text,
+      aadharurl: aadharurl,
+      appFor: degappfor.text,
+      highschoolboard: highschoolboard.text,
+      highschoolcollegename: highschoolcollegename.text,
+      highschoolpercent: highschoolpercent.text,
+      intermediatecollegename: intermediatecollegename.text,
+      intermediateboard: intermediateboard.text,
+      intermediatepercent: intermediatepercent.text,
+      photourl: photourl,
+      signurl: signurl,
+      dob: dob,
+      status: "pending",
+      income: income.text,
+    );
 
-
-    await firebaseFirestore
-        .collection("Student")
-        .doc(user.uid)
-        .set(studentModel.toMap());
+    final firestore = FirebaseFirestore.instance;
+    await firestore.collection("StudentPublic").doc(user.uid).set(
+          studentModel.toPublicMap(),
+        );
+    await firestore.collection("StudentPrivate").doc(user.uid).set(
+          studentModel.toPrivateMap(),
+        );
     Fluttertoast.showToast(msg: "Account created successfully!");
-    //Navigator.pushNamed(this.context,'/d-home');
-    Navigator.push(this.context, MaterialPageRoute(builder: (context) => StudentHome()));
-    //Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => DonerHome()), (route) => false);
+    if (const bool.fromEnvironment('USE_TEST_DATA')) {
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const StudentHome()),
+    );
   }
-
 }

@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class StudentModel{
-  final CollectionReference profilelist= FirebaseFirestore.instance.collection('Student');
+class StudentModel {
+  final CollectionReference profilelist =
+      FirebaseFirestore.instance.collection('StudentPublic');
   String? uid;
   String? name;
   String? email;
@@ -25,12 +27,31 @@ class StudentModel{
   String? status;
   String? income;
 
-  StudentModel({this.uid, this.name, this.email, this.phonenum, this.address, this.aadharC, this.highschoolcollegename,
-    this.highschoolboard,this.highschoolpercent,this.intermediatecollegename, this.intermediateboard,
-    this.intermediatepercent, this.photourl, this.signurl, this.aadharurl, this.dob, this.amountReq,this.appFor,this.status, this.amountRec,this.income});
+  StudentModel(
+      {this.uid,
+      this.name,
+      this.email,
+      this.phonenum,
+      this.address,
+      this.aadharC,
+      this.highschoolcollegename,
+      this.highschoolboard,
+      this.highschoolpercent,
+      this.intermediatecollegename,
+      this.intermediateboard,
+      this.intermediatepercent,
+      this.photourl,
+      this.signurl,
+      this.aadharurl,
+      this.dob,
+      this.amountReq,
+      this.appFor,
+      this.status,
+      this.amountRec,
+      this.income});
 
   //Reciving data from firebase
-  factory StudentModel.fromMap(map){
+  factory StudentModel.fromMap(map) {
     return StudentModel(
         uid: map['uid'],
         name: map['name'],
@@ -50,52 +71,60 @@ class StudentModel{
         aadharurl: map['aadharurl'],
         dob: map['dob'],
         appFor: map['appFor'],
-        amountReq: map['amountReq']
-        , amountRec: map['amountRec'],
+        amountReq: map['amountReq'],
+        amountRec: map['amountRec'],
         status: map['status'],
-        income:map['income']
-    );
+        income: map['income']);
   }
-  Future getStudentList()async{
-    List studentlist=[];
-    try{
-      await profilelist.where('status',isEqualTo: "approved").get().then((querySnapshot){
-        querySnapshot.docs.forEach((element){
+  Future getStudentList() async {
+    List studentlist = [];
+    try {
+      await profilelist
+          .where('status', isEqualTo: "approved")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((element) {
           studentlist.add(element.data());
           //print(element.data);
         });
       });
       return studentlist;
-    }
-    catch(e){
+    } catch (e) {
       print(e.toString());
       return null;
     }
   }
-  Future getStudent(String em)async{
-    List student=[];
-    try{
-      await profilelist.where('email',isEqualTo: em).get().then((querySnapshot){
-        querySnapshot.docs.forEach((element){
-          student.add(element.data());
+
+  Future getStudent(String em) async {
+    List student = [];
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email?.toLowerCase() != em.toLowerCase()) {
+        return student;
+      }
+      final publicProfile = await profilelist.doc(user.uid).get();
+      final privateProfile = await FirebaseFirestore.instance
+          .collection('StudentPrivate')
+          .doc(user.uid)
+          .get();
+      if (publicProfile.exists && privateProfile.exists) {
+        student.add({
+          ...privateProfile.data() as Map<String, dynamic>,
+          ...publicProfile.data() as Map<String, dynamic>,
         });
-      });
+      }
       return student;
-    }
-    catch(e){
+    } catch (e) {
       print(e.toString());
       return null;
     }
   }
+
   //Sending data to firebase
-  Map<String, dynamic> toMap(){
-    return{
+  Map<String, dynamic> toPublicMap() {
+    return {
       'uid': uid,
       'name': name,
-      'email': email,
-      'phonenum': phonenum,
-      'address': address,
-      //  'password': password,
       'highschoolcollegename': highschoolcollegename,
       'highschoolboard': highschoolboard,
       'highschoolpercent': highschoolpercent,
@@ -103,16 +132,24 @@ class StudentModel{
       'intermediateboard': intermediateboard,
       'intermediatepercent': intermediatepercent,
       'photourl': photourl,
-      'signurl': signurl,
-      'aadharurl': aadharurl,
-      'dob': dob,
-      'amountReq':amountReq,
-      'appFor':appFor,
-      'amountRec':amountRec,
-      'status':status,
-      'aadharC':aadharC,
-      'income':income
+      'amountReq': amountReq,
+      'appFor': appFor,
+      'amountRec': amountRec,
+      'status': status,
+      'income': income
     };
   }
 
+  Map<String, dynamic> toPrivateMap() {
+    return {
+      'uid': uid,
+      'email': email,
+      'phonenum': phonenum,
+      'address': address,
+      'aadharC': aadharC,
+      'signurl': signurl,
+      'aadharurl': aadharurl,
+      'dob': dob,
+    };
+  }
 }
