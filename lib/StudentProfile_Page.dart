@@ -17,7 +17,7 @@ class StudentProfile_Page extends StatefulWidget {
 class _StudentProfile_Page extends State<StudentProfile_Page> {
   final _auth = FirebaseAuth.instance;
   bool status = false;
-  late User loggedUser;
+  User? loggedUser;
   List studentProfile = [];
   @override
   void initState() {
@@ -28,11 +28,17 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
   }
 
   Future<List> fetchStudent() async {
-    dynamic resultant =
-        await StudentModel().getStudent(loggedUser.email.toString());
+    final user = _auth.currentUser;
+    if (user == null) {
+      return studentProfile;
+    }
+    dynamic resultant = await StudentModel().getStudent(user.email.toString());
     if (resultant == null) {
       print("unable to retrieve");
     } else {
+      if (!mounted) {
+        return studentProfile;
+      }
       setState(() {
         studentProfile = resultant;
       });
@@ -45,7 +51,7 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
       final user = _auth.currentUser!;
       loggedUser = user;
       print("user email");
-      print(loggedUser.email);
+      print(loggedUser!.email);
     } catch (e) {
       print(e);
     }
@@ -53,6 +59,11 @@ class _StudentProfile_Page extends State<StudentProfile_Page> {
 
   @override
   Widget build(BuildContext context) {
+    if (studentProfile.isEmpty) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     final size = MediaQuery.of(context).size;
     String phoneNumber = studentProfile[0]['phonenum'].toString();
     String address = studentProfile[0]['address'];

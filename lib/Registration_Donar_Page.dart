@@ -558,6 +558,11 @@ class _Registration_Donor extends State<Registration_Donor> {
       });
       if (_photo == null || _signature == null || _aadhar == null) {
         Fluttertoast.showToast(msg: "Please upload all required documents");
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
         return;
       }
 
